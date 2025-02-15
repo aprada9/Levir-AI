@@ -60,29 +60,41 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
           <div className="w-full space-y-2">
             {mainNavLinks.map((link, i) => (
               <div key={i} className="w-full">
-                <button
-                  onClick={() => setExpandedItem(expandedItem === link.label ? null : link.label)}
-                  className={cn(
-                    'flex items-center w-full p-3 rounded-lg transition-colors',
-                    link.active
-                      ? 'text-black dark:text-white bg-black/10 dark:bg-white/10'
-                      : 'text-black/70 dark:text-white/70 hover:bg-black/10 dark:hover:bg-white/10'
-                  )}
-                >
-                  <link.icon size={24} />
-                  <span className="ml-3">{link.label}</span>
+                <div className="flex w-full">
+                  <Link
+                    href={link.href}
+                    className={cn(
+                      'flex items-center flex-grow p-3 rounded-lg transition-colors',
+                      link.active
+                        ? 'text-black dark:text-white bg-black/10 dark:bg-white/10'
+                        : 'text-black/70 dark:text-white/70 hover:bg-black/10 dark:hover:bg-white/10'
+                    )}
+                  >
+                    <link.icon size={24} />
+                    <span className="ml-3">{link.label}</span>
+                  </Link>
                   {link.subItems.length > 0 && (
-                    <svg
-                      className={`ml-auto h-5 w-5 transform transition-transform ${
-                        expandedItem === link.label ? 'rotate-180' : ''
-                      }`}
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
+                    <button
+                      onClick={() => setExpandedItem(expandedItem === link.label ? null : link.label)}
+                      className={cn(
+                        'p-3 transition-colors',
+                        link.active
+                          ? 'text-black dark:text-white'
+                          : 'text-black/70 dark:text-white/70'
+                      )}
                     >
-                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                    </svg>
+                      <svg
+                        className={`h-5 w-5 transform transition-transform ${
+                          expandedItem === link.label ? 'rotate-180' : ''
+                        }`}
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                      </svg>
+                    </button>
                   )}
-                </button>
+                </div>
                 
                 {expandedItem === link.label && link.subItems.length > 0 && (
                   <div className="ml-8 mt-2 space-y-1">
