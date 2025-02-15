@@ -38,5 +38,5 @@ Thumbs.db
 db.sqlite
 /searxng
 
-#API Keys
+#API Keys 
 sample.config.toml
