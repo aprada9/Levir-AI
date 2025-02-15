@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { BookOpenText, Home, Search, SquarePen, Settings } from 'lucide-react';
+import { BookOpenText, Home, Search, SquarePen, Settings, FileSearch } from 'lucide-react';
 import Link from 'next/link';
 import { useSelectedLayoutSegments } from 'next/navigation';
 import React, { useState, type ReactNode } from 'react';
@@ -16,64 +16,51 @@ const VerticalIconContainer = ({ children }: { children: ReactNode }) => {
 const Sidebar = ({ children }: { children: React.ReactNode }) => {
   const segments = useSelectedLayoutSegments();
 
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
-  const navLinks = [
+  const mainNavLinks = [
     {
-      icon: Home,
+      icon: SquarePen,
       href: '/',
-      active: segments.length === 0 || segments.includes('c'),
-      label: 'Home',
+      active: !segments.includes('ocr'),
+      label: 'Perplexica',
     },
     {
-      icon: Search,
-      href: '/discover',
-      active: segments.includes('discover'),
-      label: 'Discover',
-    },
-    {
-      icon: BookOpenText,
-      href: '/library',
-      active: segments.includes('library'),
-      label: 'Library',
-    },
+      icon: FileSearch,
+      href: '/ocr',
+      active: segments.includes('ocr'),
+      label: 'OCR',
+    }
   ];
 
   return (
     <div>
       <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-20 lg:flex-col">
         <div className="flex grow flex-col items-center justify-between gap-y-5 overflow-y-auto bg-light-secondary dark:bg-dark-secondary px-2 py-8">
-          <a href="/">
-            <SquarePen className="cursor-pointer" />
-          </a>
           <VerticalIconContainer>
-            {navLinks.map((link, i) => (
+            {mainNavLinks.map((link, i) => (
               <Link
                 key={i}
                 href={link.href}
                 className={cn(
-                  'relative flex flex-row items-center justify-center cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 duration-150 transition w-full py-2 rounded-lg',
+                  'relative flex flex-col items-center justify-center cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 duration-150 transition w-full py-4 rounded-lg',
                   link.active
                     ? 'text-black dark:text-white'
                     : 'text-black/70 dark:text-white/70',
                 )}
               >
-                <link.icon />
+                <link.icon size={24} />
+                <span className="text-xs mt-1">{link.label}</span>
                 {link.active && (
                   <div className="absolute right-0 -mr-2 h-full w-1 rounded-l-lg bg-black dark:bg-white" />
                 )}
               </Link>
             ))}
           </VerticalIconContainer>
-
-          <Link href="/settings">
-            <Settings className="cursor-pointer" />
-          </Link>
         </div>
       </div>
 
+      {/* Mobile bottom navigation */}
       <div className="fixed bottom-0 w-full z-50 flex flex-row items-center gap-x-6 bg-light-primary dark:bg-dark-primary px-4 py-4 shadow-sm lg:hidden">
-        {navLinks.map((link, i) => (
+        {mainNavLinks.map((link, i) => (
           <Link
             href={link.href}
             key={i}
