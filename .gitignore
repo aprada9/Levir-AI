@@ -37,3 +37,6 @@ Thumbs.db
 # Db
 db.sqlite
 /searxng
+
+#API Keys
+sample.config.toml
