@@ -122,6 +122,7 @@ const handleEmitterEvents = (
 
     db.insert(messagesSchema)
       .values({
+        id: Number(Date.now()),
         content: recievedMessage,
         chatId: chatId,
         messageId: messageId,
@@ -218,7 +219,7 @@ export const handleMessage = async (
                 title: parsedMessage.content,
                 createdAt: new Date().toString(),
                 focusMode: parsedWSMessage.focusMode,
-                files: parsedWSMessage.files.map(getFileDetails),
+                files: JSON.stringify([]),
               })
               .execute();
           }
@@ -237,6 +238,7 @@ export const handleMessage = async (
             await db
               .insert(messagesSchema)
               .values({
+                id: Number(Date.now()),
                 content: parsedMessage.content,
                 chatId: parsedMessage.chatId,
                 messageId: humanMessageId,

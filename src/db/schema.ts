@@ -1,12 +1,12 @@
-import { pgTable, text, serial, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, text, bigint, jsonb } from 'drizzle-orm/pg-core';
 
 export const messages = pgTable('messages', {
-  id: serial('id').primaryKey(),
+  id: bigint('id', { mode: 'number' }).primaryKey(),
   content: text('content').notNull(),
   chatId: text('chatId').notNull(),
   messageId: text('messageId').notNull(),
   role: text('role').notNull(),
-  metadata: jsonb('metadata'),
+  metadata: jsonb('metadata').notNull(),
 });
 
 interface File {
@@ -19,5 +19,5 @@ export const chats = pgTable('chats', {
   title: text('title').notNull(),
   createdAt: text('createdAt').notNull(),
   focusMode: text('focusMode').notNull(),
-  files: jsonb('files').default([]),
+  files: jsonb('files').notNull(),
 });
