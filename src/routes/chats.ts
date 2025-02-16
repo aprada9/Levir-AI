@@ -21,27 +21,29 @@ router.get('/', async (_, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    console.log('Fetching chat:', req.params.id); // Debug log
+    console.log('Fetching chat:', req.params.id);
 
     const chatExists = await db.query.chats.findFirst({
       where: eq(chats.id, req.params.id),
     });
 
-    console.log('Found chat:', chatExists); // Debug log
-
     if (!chatExists) {
       return res.status(404).json({ message: 'Chat not found' });
     }
+
+    // Parse the files JSON string
+    const chat = {
+      ...chatExists,
+      files: JSON.parse(chatExists.files as string)
+    };
 
     const chatMessages = await db.query.messages.findMany({
       where: eq(messages.chatId, req.params.id),
     });
 
-    console.log('Found messages:', chatMessages); // Debug log
-
-    return res.status(200).json({ chat: chatExists, messages: chatMessages });
+    return res.status(200).json({ chat, messages: chatMessages });
   } catch (err) {
-    console.error('Error details:', err); // Debug log
+    console.error('Error details:', err);
     res.status(500).json({ message: 'An error has occurred.' });
     logger.error(`Error in getting chat: ${err.message}`);
   }
