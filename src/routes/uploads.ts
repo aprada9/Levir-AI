@@ -10,6 +10,7 @@ import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf';
 import { DocxLoader } from '@langchain/community/document_loaders/fs/docx';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Document } from 'langchain/document';
+import { RequestHandler } from 'express';
 
 const router = express.Router();
 
@@ -34,13 +35,15 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+const uploadMiddleware: RequestHandler = upload.fields([
+  { name: 'files' },
+  { name: 'embedding_model', maxCount: 1 },
+  { name: 'embedding_model_provider', maxCount: 1 },
+]) as unknown as RequestHandler;
+
 router.post(
   '/',
-  upload.fields([
-    { name: 'files' },
-    { name: 'embedding_model', maxCount: 1 },
-    { name: 'embedding_model_provider', maxCount: 1 },
-  ]),
+  uploadMiddleware,
   async (req, res) => {
     try {
       const { embedding_model, embedding_model_provider } = req.body;

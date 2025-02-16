@@ -121,6 +121,7 @@ const handleEmitterEvents = (
 
     db.insert(messagesSchema)
       .values({
+        id: Date.now(),
         content: recievedMessage,
         chatId: chatId,
         messageId: messageId,
@@ -226,6 +227,7 @@ export const handleMessage = async (
             await db
               .insert(messagesSchema)
               .values({
+                id: Date.now(),
                 content: parsedMessage.content,
                 chatId: parsedMessage.chatId,
                 messageId: humanMessageId,
