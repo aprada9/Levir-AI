@@ -332,11 +332,20 @@ const loadMessages = async (
   }
 
   const data = await res.json();
+  console.log('Received chat data:', data); // Debug log
+
+  if (!data.messages || data.messages.length === 0) {
+    console.log('No messages found for chat'); // Debug log
+    setMessages([]);
+    setIsMessagesLoaded(true);
+    return;
+  }
 
   const messages = data.messages.map((msg: any) => {
+    console.log('Processing message:', msg); // Debug log
     return {
       ...msg,
-      ...JSON.parse(msg.metadata),
+      ...JSON.parse(msg.metadata || '{}'),
     };
   }) as Message[];
 
@@ -348,9 +357,11 @@ const loadMessages = async (
 
   console.debug(new Date(), 'app:messages_loaded');
 
-  document.title = messages[0].content;
+  if (messages.length > 0) {
+    document.title = messages[0].content;
+  }
 
-  const files = data.chat.files.map((file: any) => {
+  const files = (data.chat.files || []).map((file: any) => {
     return {
       fileName: file.name,
       fileExtension: file.name.split('.').pop(),

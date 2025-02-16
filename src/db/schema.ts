@@ -1,7 +1,7 @@
-import { pgTable, text, integer, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, text, serial, jsonb } from 'drizzle-orm/pg-core';
 
 export const messages = pgTable('messages', {
-  id: integer('id').primaryKey(),
+  id: serial('id').primaryKey(),
   content: text('content').notNull(),
   chatId: text('chatId').notNull(),
   messageId: text('messageId').notNull(),

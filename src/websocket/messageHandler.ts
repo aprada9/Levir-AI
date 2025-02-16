@@ -116,12 +116,12 @@ const handleEmitterEvents = (
       sources = parsedData.data;
     }
   });
+  
   emitter.on('end', () => {
     ws.send(JSON.stringify({ type: 'messageEnd', messageId: messageId }));
 
     db.insert(messagesSchema)
       .values({
-        id: Date.now(),
         content: recievedMessage,
         chatId: chatId,
         messageId: messageId,
@@ -133,6 +133,7 @@ const handleEmitterEvents = (
       })
       .execute();
   });
+
   emitter.on('error', (data) => {
     const parsedData = JSON.parse(data);
     ws.send(
@@ -153,6 +154,8 @@ export const handleMessage = async (
 ) => {
   try {
     const parsedWSMessage = JSON.parse(message) as WSMessage;
+    console.log('Received WebSocket message:', parsedWSMessage); // Debug log
+
     const parsedMessage = parsedWSMessage.message;
 
     if (parsedWSMessage.files.length > 0) {
@@ -207,6 +210,7 @@ export const handleMessage = async (
           });
 
           if (!chat) {
+            console.log('Creating new chat:', parsedMessage.chatId); // Debug log
             await db
               .insert(chats)
               .values({
@@ -224,10 +228,15 @@ export const handleMessage = async (
           });
 
           if (!messageExists) {
+            console.log('Inserting new message:', {
+              chatId: parsedMessage.chatId,
+              content: parsedMessage.content,
+              messageId: humanMessageId,
+            }); // Debug log
+
             await db
               .insert(messagesSchema)
               .values({
-                id: Date.now(),
                 content: parsedMessage.content,
                 chatId: parsedMessage.chatId,
                 messageId: humanMessageId,
@@ -238,6 +247,7 @@ export const handleMessage = async (
               })
               .execute();
           } else {
+            console.log('Message already exists, cleaning up later messages'); // Debug log
             await db
               .delete(messagesSchema)
               .where(
@@ -249,7 +259,14 @@ export const handleMessage = async (
               .execute();
           }
         } catch (err) {
-          console.log(err);
+          console.error('Error in message handler:', err); // Debug log
+          ws.send(
+            JSON.stringify({
+              type: 'error',
+              data: 'An error occurred while processing your message.',
+              key: 'MESSAGE_PROCESSING_ERROR',
+            }),
+          );
         }
       } else {
         ws.send(
@@ -262,13 +279,13 @@ export const handleMessage = async (
       }
     }
   } catch (err) {
+    console.error('Error parsing message:', err); // Debug log
     ws.send(
       JSON.stringify({
         type: 'error',
-        data: 'Invalid message format',
-        key: 'INVALID_FORMAT',
+        data: 'An error occurred while parsing your message.',
+        key: 'MESSAGE_PARSING_ERROR',
       }),
     );
-    logger.error(`Failed to handle message: ${err}`);
   }
 };
