@@ -1,0 +1,53 @@
+.prose {
+    max-width: 65ch;
+    color: inherit;
+  }
+  
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    color: inherit;
+    margin-top: 2em;
+    margin-bottom: 1em;
+  }
+  
+  .prose p {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+  }
+  
+  .prose ul,
+  .prose ol {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+    padding-left: 1.625em;
+  }
+  
+  .prose li {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+  
+  .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+  
+  .prose td,
+  .prose th {
+    border: 1px solid currentColor;
+    padding: 0.5em 1em;
+  }
+  
+  .prose th {
+    background: rgba(0, 0, 0, 0.05);
+  }
+  
+  .dark .prose th {
+    background: rgba(255, 255, 255, 0.05);
+  }

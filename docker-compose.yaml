@@ -38,9 +38,16 @@ services:
       context: .
       dockerfile: app.dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=http://127.0.0.1:3001/api
-        - NEXT_PUBLIC_WS_URL=ws://127.0.0.1:3001
+        - NEXT_PUBLIC_API_URL=http://localhost:3001/api
+        - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
+        - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+        - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+        - NEXT_PUBLIC_WS_URL=ws://localhost:3001
     image: itzcrazykns1337/perplexica-frontend:main
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
     depends_on:
       - perplexica-backend
     ports:

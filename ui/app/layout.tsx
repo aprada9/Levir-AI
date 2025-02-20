@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import Sidebar from '@/components/Sidebar';
 import { Toaster } from 'sonner';
 import ThemeProvider from '@/components/theme/Provider';
+import '@/styles/prose.css'
 
 const montserrat = Montserrat({
   weight: ['300', '400', '500', '700'],
