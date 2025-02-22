@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { File, LoaderCircle, Upload, Download } from 'lucide-react';
+import { File, LoaderCircle, Upload, FileText, FileIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
@@ -20,14 +20,14 @@ const OCRPage = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleDownload = () => {
+  const handleTextDownload = () => {
     if (!result) return;
     
-    const blob = new Blob([result.text], { type: 'text/html' });
+    const blob = new Blob([result.text], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'extracted-text.html';
+    a.download = 'extracted-text.txt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -179,16 +179,20 @@ const OCRPage = () => {
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={handleDownload}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                  onClick={handleTextDownload}
+                  className="flex items-center gap-1 px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  title="Download as TXT"
                 >
-                  <Download className="w-5 h-5 text-black/50 dark:text-white/50" />
+                  <FileText className="w-4 h-4 text-black/50 dark:text-white/50" />
+                  <span className="text-black/70 dark:text-white/70">TXT</span>
                 </button>
                 <button
                   onClick={handleDocxDownload}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                  className="flex items-center gap-1 px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  title="Download as DOCX"
                 >
-                  <Download className="w-5 h-5 text-black/50 dark:text-white/50" />
+                  <FileIcon className="w-4 h-4 text-black/50 dark:text-white/50" />
+                  <span className="text-black/70 dark:text-white/70">DOCX</span>
                 </button>
               </div>
             </div>
