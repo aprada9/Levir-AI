@@ -49,7 +49,20 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
       href: '/ocr',
       active: segments.includes('ocr'),
       label: 'OCR',
-      subItems: [] // Empty for now, can be populated later
+      subItems: [
+        {
+          icon: FileSearch,
+          href: '/ocr',
+          active: segments.includes('ocr') && !segments.includes('history'),
+          label: 'Scan',
+        },
+        {
+          icon: History,
+          href: '/ocr/history',
+          active: segments.includes('ocr') && segments.includes('history'),
+          label: 'History',
+        }
+      ]
     }
   ];
 
