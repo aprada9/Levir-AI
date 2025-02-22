@@ -4,9 +4,11 @@ import { useRef, useState } from 'react';
 import { File, LoaderCircle, Upload, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { Document, Packer, Paragraph, TextRun } from 'docx';
 
 interface OCRResult {
   text: string;
+  id: string;
 }
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -30,6 +32,38 @@ const OCRPage = () => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  };
+
+  const handleDocxDownload = async () => {
+    if (!result) return;
+
+    try {
+      const doc = new Document({
+        sections: [{
+          properties: {},
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({ text: result.text })
+              ]
+            })
+          ]
+        }]
+      });
+
+      const blob = await Packer.toBlob(doc);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'extracted-text.docx';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error generating DOCX:', error);
+      toast.error('Error generating document. Please try again.');
+    }
   };
 
   const processFile = async (file: File) => {
@@ -143,12 +177,20 @@ const OCRPage = () => {
                   Extracted Text
                 </h2>
               </div>
-              <button
-                onClick={handleDownload}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
-              >
-                <Download className="w-5 h-5 text-black/50 dark:text-white/50" />
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleDownload}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                >
+                  <Download className="w-5 h-5 text-black/50 dark:text-white/50" />
+                </button>
+                <button
+                  onClick={handleDocxDownload}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                >
+                  <Download className="w-5 h-5 text-black/50 dark:text-white/50" />
+                </button>
+              </div>
             </div>
             <div 
               className="prose dark:prose-invert max-w-none"

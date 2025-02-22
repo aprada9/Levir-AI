@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     if (functionError) {
       console.error('Supabase function error:', functionError);
       return NextResponse.json(
-        { error: `Function error: ${functionError.message}` },
+        { error: `Function error: ${functionError.message}`, details: functionError },
         { status: 500 }
       );
     }
@@ -57,7 +57,10 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error('OCR processing error:', error);
     return NextResponse.json(
-      { error: `OCR processing failed: ${error.message}` },
+      { 
+        error: `OCR processing failed: ${error.message}`,
+        details: error.stack || error
+      },
       { status: 500 }
     );
   }

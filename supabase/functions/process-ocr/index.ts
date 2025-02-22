@@ -1,9 +1,11 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
+import { Document, Packer, Paragraph, TextRun } from 'npm:docx'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
 }
 
 const SUPPORTED_FORMATS = ['image/png', 'image/jpeg', 'image/gif', 'image/webp']
@@ -100,13 +102,17 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are an OCR assistant that extracts and formats text from images.
-            Your task is to:
-            1. Extract all text from the image
-            2. Preserve the original document structure and formatting
-            3. Use HTML tags to maintain layout and styling
-            4. If you detect specific document types (forms, invoices, etc.), structure accordingly
-            5. Maintain the visual hierarchy of the original document`
+            content: "You are a document analysis assistant that extracts text from images.\n\
+            Extract all text from the image while preserving its structure and layout.\n\
+            Important rules:\n\
+            1. DO NOT include any HTML tags, markdown, or formatting\n\
+            2. Use plain text formatting:\n\
+               - Use blank lines to separate sections\n\
+               - Use tabs (\\t) to separate columns in tables\n\
+               - Use standard bullet points (•) for lists\n\
+               - Use line breaks to maintain layout\n\
+            3. Preserve the visual hierarchy using spacing\n\
+            4. Return ONLY the extracted text without any additional formatting or explanation"
           },
           {
             role: "user",
@@ -132,7 +138,38 @@ serve(async (req) => {
     }
 
     const data = await response.json()
-    const extractedText = data.choices[0]?.message?.content || 'Unable to extract text'
+    let extractedText = data.choices[0]?.message?.content || 'Unable to extract text'
+    
+    // Store the raw version in the database
+    const processedText = extractedText.trim();
+
+    // Clean and format the text for display
+    const cleanText = processedText
+      .replace(/\t+/g, '\t') // Normalize multiple tabs to single tab
+      .replace(/\n{3,}/g, '\n\n') // Normalize multiple line breaks
+      .replace(/^\s+|\s+$/gm, '') // Trim each line
+      .trim();
+
+    // Create Word document
+    const doc = new Document({
+      sections: [{
+        properties: {},
+        children: cleanText.split('\n').map(line => 
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: line,
+                break: line === '' ? 1 : 0
+              })
+            ]
+          })
+        )
+      }]
+    });
+
+    // Generate docx buffer
+    const docxBuffer = await Packer.toBuffer(doc);
+    const docxBase64 = btoa(String.fromCharCode(...new Uint8Array(docxBuffer)));
 
     // Store result in database
     console.log('Storing result in database...');
@@ -140,9 +177,10 @@ serve(async (req) => {
       .from('ocr_results')
       .insert({
         original_filename: fileName,
-        processed_text: extractedText,
+        processed_text: processedText,
         file_type: fileType,
         file_size: fileSize,
+        docx_content: docxBase64 // Store the docx content for later retrieval
       })
 
     if (dbError) {
@@ -161,7 +199,10 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ text: extractedText }),
+      JSON.stringify({ 
+        text: cleanText,
+        docxBase64: docxBase64 
+      }),
       { 
         headers: { 
           ...corsHeaders, 
