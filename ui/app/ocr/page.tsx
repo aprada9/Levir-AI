@@ -4,7 +4,8 @@ import { useRef, useState } from 'react';
 import { File, LoaderCircle, Upload, FileText, FileIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { Document, Packer, Paragraph, TextRun } from 'docx';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, convertInchesToTwip, WidthType, AlignmentType } from 'docx';
+import styles from './ocr.module.css';
 
 interface OCRResult {
   text: string;
@@ -12,6 +13,96 @@ interface OCRResult {
 }
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+// Add HTML parsing function
+function parseHTMLForDOCX(html: string): any[] {
+  const elements: any[] = [];
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = html;
+  
+  function processNode(node: Element): any[] {
+    const results: any[] = [];
+    
+    if (node.tagName) {
+      switch (node.tagName.toLowerCase()) {
+        case 'h1':
+          results.push(new Paragraph({
+            children: [new TextRun({ text: node.textContent || '', bold: true, size: 32 })],
+            spacing: { before: 240, after: 120 }
+          }));
+          break;
+          
+        case 'h2':
+          results.push(new Paragraph({
+            children: [new TextRun({ text: node.textContent || '', bold: true, size: 26 })],
+            spacing: { before: 240, after: 120 }
+          }));
+          break;
+          
+        case 'p':
+          results.push(new Paragraph({
+            children: [new TextRun({ text: node.textContent || '' })],
+            spacing: { before: 120, after: 120 }
+          }));
+          break;
+          
+        case 'table': {
+          const rows = Array.from(node.getElementsByTagName('tr')).map(tr => {
+            const cells = Array.from(tr.children).map(td => {
+              return new TableCell({
+                children: [new Paragraph({
+                  children: [new TextRun({ text: td.textContent || '' })]
+                })]
+              });
+            });
+            return new TableRow({ children: cells });
+          });
+          
+          if (rows.length > 0) {
+            results.push(new Table({
+              rows: rows
+            }));
+          }
+          break;
+        }
+        
+        case 'hr':
+          results.push(new Paragraph({
+            children: [new TextRun({ text: '_______________', bold: true })],
+            spacing: { before: 240, after: 240 },
+            alignment: AlignmentType.CENTER
+          }));
+          break;
+          
+        case 'div':
+          // Process children
+          Array.from(node.children).forEach(child => {
+            if (child instanceof Element) {
+              results.push(...processNode(child));
+            }
+          });
+          break;
+          
+        default:
+          if (node.textContent?.trim()) {
+            results.push(new Paragraph({
+              children: [new TextRun({ text: node.textContent.trim() })]
+            }));
+          }
+      }
+    }
+    
+    return results;
+  }
+
+  Array.from(tempDiv.children).forEach(node => {
+    if (node instanceof Element) {
+      elements.push(...processNode(node));
+    }
+  });
+
+  return elements;
+}
 
 const OCRPage = () => {
   const [loading, setLoading] = useState(false);
@@ -23,7 +114,9 @@ const OCRPage = () => {
   const handleTextDownload = () => {
     if (!result) return;
     
-    const blob = new Blob([result.text], { type: 'text/plain' });
+    // For text download, strip HTML tags
+    const plainText = result.text.replace(/<[^>]+>/g, '');
+    const blob = new Blob([plainText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -38,16 +131,21 @@ const OCRPage = () => {
     if (!result) return;
 
     try {
+      const docElements = parseHTMLForDOCX(result.text);
+      
       const doc = new Document({
         sections: [{
-          properties: {},
-          children: [
-            new Paragraph({
-              children: [
-                new TextRun({ text: result.text })
-              ]
-            })
-          ]
+          properties: {
+            page: {
+              margin: {
+                top: 1440, // 1 inch
+                right: 1440,
+                bottom: 1440,
+                left: 1440
+              }
+            }
+          },
+          children: docElements
         }]
       });
 
@@ -168,7 +266,7 @@ const OCRPage = () => {
       )}
 
       {result && (
-        <div className="mt-8 w-full max-w-2xl">
+        <div className="mt-8 w-full max-w-4xl">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -197,7 +295,7 @@ const OCRPage = () => {
               </div>
             </div>
             <div 
-              className="prose dark:prose-invert max-w-none"
+              className={`ocr-content ${styles.ocrContent}`}
               dangerouslySetInnerHTML={{ __html: result.text }}
             />
           </div>

@@ -1,6 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
-import { Document, Packer, Paragraph, TextRun } from 'npm:docx'
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, TableRow, TableCell, Table } from 'npm:docx'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,6 +13,103 @@ const SUPPORTED_FORMATS = ['image/png', 'image/jpeg', 'image/gif', 'image/webp']
 // Function to generate a UUID
 function generateUUID() {
   return crypto.randomUUID();
+}
+
+// HTML parsing helper function using regex
+function parseHTML(html: string): any[] {
+  const elements: any[] = [];
+  
+  // Split HTML into blocks based on major tags
+  const blocks = html.split(/(?=<(?:h[1-6]|p|ul|table|div))/i);
+  
+  for (const block of blocks) {
+    if (!block.trim()) continue;
+    
+    // Extract tag and content
+    const tagMatch = block.match(/<(\w+)[^>]*>([\s\S]*?)(?:<\/\1>|$)/);
+    if (!tagMatch) {
+      elements.push(new Paragraph({
+        children: [new TextRun(block.trim())]
+      }));
+      continue;
+    }
+    
+    const [_, tag, content] = tagMatch;
+    
+    switch (tag.toLowerCase()) {
+      case 'h1':
+        elements.push(new Paragraph({
+          text: content.replace(/<[^>]+>/g, '').trim(),
+          heading: HeadingLevel.HEADING_1
+        }));
+        break;
+      case 'h2':
+        elements.push(new Paragraph({
+          text: content.replace(/<[^>]+>/g, '').trim(),
+          heading: HeadingLevel.HEADING_2
+        }));
+        break;
+      case 'p':
+        // Process inline formatting
+        const runs: TextRun[] = [];
+        let currentText = content;
+        
+        // Handle bold text
+        currentText = currentText.replace(/<strong>(.*?)<\/strong>/g, (_, text) => {
+          runs.push(new TextRun({ text, bold: true }));
+          return '';
+        });
+        
+        // Handle italic text
+        currentText = currentText.replace(/<em>(.*?)<\/em>/g, (_, text) => {
+          runs.push(new TextRun({ text, italics: true }));
+          return '';
+        });
+        
+        // Add remaining text
+        if (currentText.trim()) {
+          runs.push(new TextRun(currentText.replace(/<[^>]+>/g, '').trim()));
+        }
+        
+        elements.push(new Paragraph({ children: runs }));
+        break;
+      case 'ul':
+        const items = content.match(/<li>([\s\S]*?)<\/li>/g) || [];
+        items.forEach(item => {
+          const itemText = item.replace(/<[^>]+>/g, '').trim();
+          elements.push(new Paragraph({
+            bullet: { level: 0 },
+            children: [new TextRun(itemText)]
+          }));
+        });
+        break;
+      case 'table':
+        const rows = content.match(/<tr>([\s\S]*?)<\/tr>/g) || [];
+        const tableRows = rows.map(row => {
+          const cells = row.match(/<td>([\s\S]*?)<\/td>/g) || [];
+          return new TableRow({
+            children: cells.map(cell => 
+              new TableCell({
+                children: [new Paragraph({
+                  children: [new TextRun(cell.replace(/<[^>]+>/g, '').trim())]
+                })]
+              })
+            )
+          });
+        });
+        
+        if (tableRows.length > 0) {
+          elements.push(new Table({ rows: tableRows }));
+        }
+        break;
+      default:
+        elements.push(new Paragraph({
+          children: [new TextRun(content.replace(/<[^>]+>/g, '').trim())]
+        }));
+    }
+  }
+  
+  return elements;
 }
 
 serve(async (req) => {
@@ -102,17 +199,56 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "You are a document analysis assistant that extracts text from images.\n\
-            Extract all text from the image while preserving its structure and layout.\n\
-            Important rules:\n\
-            1. DO NOT include any HTML tags, markdown, or formatting\n\
-            2. Use plain text formatting:\n\
-               - Use blank lines to separate sections\n\
-               - Use tabs (\\t) to separate columns in tables\n\
-               - Use standard bullet points (•) for lists\n\
-               - Use line breaks to maintain layout\n\
-            3. Preserve the visual hierarchy using spacing\n\
-            4. Return ONLY the extracted text without any additional formatting or explanation"
+            content: `You are a document analysis assistant that extracts and formats text from images with precise HTML formatting.
+            Your task is to:
+            1. Extract all text from the image and format it with proper HTML
+            2. Preserve the EXACT visual layout and structure of the original document
+            3. Use semantic HTML tags with specific formatting:
+               For tables:
+               - Always wrap tables in <table> tags
+               - Use <tr> for each row
+               - Use <td> for each cell
+               - Use <th> for header cells
+               - Preserve exact column alignment
+               
+               For forms and structured data:
+               - Use <div class="form-row"> for form-like rows
+               - Use <label> for field labels
+               - Use <span class="field-value"> for field values
+               
+               For text formatting:
+               - Use <h1>, <h2>, etc. for titles and headings based on visual prominence
+               - Use <p> for paragraphs with proper spacing
+               - Use <ul>/<li> for lists
+               - Use <br> for explicit line breaks
+               - Use <strong> for bold/prominent text
+               - Use <em> for emphasized text
+               - Use <hr> for horizontal lines or separators
+               
+               For layout:
+               - Use <div class="section"> to group related content
+               - Preserve indentation and alignment using appropriate CSS classes
+               - Use <pre> for maintaining exact spacing in certain text blocks
+               
+            4. Special Formatting Rules:
+               - For tabular data, ALWAYS use proper <table> structure
+               - For multi-column layouts, use appropriate table cells
+               - For form-like layouts, use consistent structure
+               - Preserve ALL whitespace and alignment when significant
+               - Use CSS classes to indicate special formatting: centered, right-aligned, etc.
+            
+            5. Example table structure:
+               <table>
+                 <tr>
+                   <th>NAME</th><th>DATE</th><th>CITY</th>
+                 </tr>
+                 <tr>
+                   <td>John</td><td>9-21-89</td><td>BARABOO</td>
+                 </tr>
+               </table>
+
+            6. Return ONLY the formatted HTML without any explanations or markdown.
+            7. Ensure EXACT visual fidelity to the original document layout.`
           },
           {
             role: "user",
@@ -140,30 +276,16 @@ serve(async (req) => {
     const data = await response.json()
     let extractedText = data.choices[0]?.message?.content || 'Unable to extract text'
     
-    // Store the raw version in the database
+    // Store the raw version in the database with HTML intact
     const processedText = extractedText.trim();
 
-    // Clean and format the text for display
-    const cleanText = processedText
-      .replace(/\t+/g, '\t') // Normalize multiple tabs to single tab
-      .replace(/\n{3,}/g, '\n\n') // Normalize multiple line breaks
-      .replace(/^\s+|\s+$/gm, '') // Trim each line
-      .trim();
+    // Create Word document with HTML conversion (preserve formatting)
+    const docElements = parseHTML(processedText); // Use our HTML parser for DOCX
 
-    // Create Word document
     const doc = new Document({
       sections: [{
         properties: {},
-        children: cleanText.split('\n').map(line => 
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: line,
-                break: line === '' ? 1 : 0
-              })
-            ]
-          })
-        )
+        children: docElements
       }]
     });
 
@@ -171,17 +293,19 @@ serve(async (req) => {
     const docxBuffer = await Packer.toBuffer(doc);
     const docxBase64 = btoa(String.fromCharCode(...new Uint8Array(docxBuffer)));
 
-    // Store result in database
+    // Store result in database with HTML formatting preserved
     console.log('Storing result in database...');
-    const { error: dbError } = await supabase
+    const { data: dbData, error: dbError } = await supabase
       .from('ocr_results')
       .insert({
         original_filename: fileName,
-        processed_text: processedText,
+        processed_text: processedText, // Store the HTML version
         file_type: fileType,
         file_size: fileSize,
-        docx_content: docxBase64 // Store the docx content for later retrieval
+        docx_content: docxBase64
       })
+      .select()
+      .single();
 
     if (dbError) {
       console.error('Database error:', dbError);
@@ -198,10 +322,13 @@ serve(async (req) => {
       console.error('Error deleting temporary file:', deleteError)
     }
 
+    // Return both HTML and DOCX versions
     return new Response(
       JSON.stringify({ 
-        text: cleanText,
-        docxBase64: docxBase64 
+        text: processedText, // Return the HTML version for display
+        html: processedText, // Explicit HTML version
+        docxBase64: docxBase64,
+        id: dbData.id
       }),
       { 
         headers: { 

@@ -1,0 +1,70 @@
+# Perplexica Project Context
+
+## Project Overview
+This is Perplexica, an AI-powered tool with multiple functionalities:
+1. Search: A Perplexity-like search tool that uses advanced ML algorithms for web search
+2. OCR: Image text scanning and extraction capability
+
+## Core Functionalities
+
+### Search Component
+- Uses SearxNG as the metadata search engine
+- Implements multiple search modes:
+  - Web Search (default)
+  - Academic Search
+  - Writing Assistant
+  - Wolfram Alpha Search
+  - YouTube Search
+  - Reddit Search
+- Features similarity search with embeddings for result ranking
+- Supports citation and source tracking
+- Uses LLMs for query understanding and response generation
+
+### OCR Component
+- Handles image uploads up to 10MB
+- Supports formats: PNG, JPEG, GIF, WebP
+- Uses GPT-4 Vision for text extraction
+- Provides multiple output formats:
+  - Plain text
+  - DOCX with formatting
+- Includes database storage for processed results
+
+## Project Structure
+- /src: Core backend implementation
+  - /routes: API endpoints
+  - /search: Search functionality
+  - /prompts: LLM prompts
+  - /chains: LangChain implementations
+- /ui: Frontend implementation
+- /supabase: Database and functions
+- /docs: Documentation
+- /drizzle: Database migrations and schema
+
+## Key Technologies
+- Frontend: Next.js
+- Backend: Express.js
+- Database: Supabase
+- Search: SearxNG
+- ML/AI: LangChain, OpenAI GPT-4
+- OCR: GPT-4 Vision API
+
+## Database Schema
+- ocr_results table:
+  - id: UUID (primary key)
+  - original_filename: text
+  - processed_text: text
+  - file_type: text
+  - file_size: integer
+  - docx_content: text
+  - created_at: timestamp
+  - updated_at: timestamp
+
+## API Endpoints
+- /api/search: Main search endpoint
+- /api/ocr: OCR processing endpoint
+
+## Environment Setup
+- Requires OpenAI API key
+- Supabase configuration
+- SearxNG instance
+- Optional: Custom OpenAI endpoint configuration 

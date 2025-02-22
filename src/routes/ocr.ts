@@ -19,8 +19,10 @@ router.post('/', upload.single('file'), async (req, res) => {
 
     // Create form data for the Edge Function
     const formData = new FormData();
-    const blob = new Blob([file.buffer], { type: file.mimetype });
-    formData.append('file', blob, file.originalname);
+    formData.append('fileName', file.originalname);
+    formData.append('fileType', file.mimetype);
+    formData.append('fileSize', file.size.toString());
+    formData.append('fileContent', file.buffer.toString('base64'));
 
     const { data: functionData, error: functionError } = await supabase.functions.invoke(
       'process-ocr',
@@ -33,7 +35,12 @@ router.post('/', upload.single('file'), async (req, res) => {
       throw new Error(`Function error: ${functionError.message}`);
     }
 
-    res.json(functionData);
+    // Return both HTML and plain text versions
+    res.json({
+      text: functionData.html || functionData.text, // Prefer HTML version
+      docxBase64: functionData.docxBase64,
+      id: functionData.id
+    });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
