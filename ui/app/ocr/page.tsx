@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { File, LoaderCircle, Upload, FileText, FileIcon } from 'lucide-react';
+import { File, LoaderCircle, Upload, FileText, FileIcon, Copy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, convertInchesToTwip, WidthType, AlignmentType } from 'docx';
@@ -114,8 +114,13 @@ const OCRPage = () => {
   const handleTextDownload = () => {
     if (!result) return;
     
-    // For text download, strip HTML tags
-    const plainText = result.text.replace(/<[^>]+>/g, '');
+    // Strip HTML tags and markdown code block markers
+    const plainText = result.text
+      .replace(/<[^>]+>/g, '') // Remove HTML tags
+      .replace(/^```html\s*/, '') // Remove opening markdown code block
+      .replace(/```\s*$/, '') // Remove closing markdown code block
+      .trim();
+      
     const blob = new Blob([plainText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -161,6 +166,24 @@ const OCRPage = () => {
     } catch (error) {
       console.error('Error generating DOCX:', error);
       toast.error('Error generating document. Please try again.');
+    }
+  };
+
+  const handleCopyToClipboard = async () => {
+    if (!result) return;
+    
+    // Strip HTML tags and markdown code block markers
+    const plainText = result.text
+      .replace(/<[^>]+>/g, '') // Remove HTML tags
+      .replace(/^```html\s*/, '') // Remove opening markdown code block
+      .replace(/```\s*$/, '') // Remove closing markdown code block
+      .trim();
+      
+    try {
+      await navigator.clipboard.writeText(plainText);
+      toast.success('Text copied to clipboard');
+    } catch (error) {
+      toast.error('Failed to copy text to clipboard');
     }
   };
 
@@ -277,6 +300,14 @@ const OCRPage = () => {
               </div>
               <div className="flex gap-2">
                 <button
+                  onClick={handleCopyToClipboard}
+                  className="flex items-center gap-1 px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  title="Copy to clipboard"
+                >
+                  <Copy className="w-4 h-4 text-black/50 dark:text-white/50" />
+                  <span className="text-black/70 dark:text-white/70">Copy</span>
+                </button>
+                <button
                   onClick={handleTextDownload}
                   className="flex items-center gap-1 px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                   title="Download as TXT"
@@ -296,7 +327,12 @@ const OCRPage = () => {
             </div>
             <div 
               className={`ocr-content ${styles.ocrContent}`}
-              dangerouslySetInnerHTML={{ __html: result.text }}
+              dangerouslySetInnerHTML={{ 
+                __html: result.text
+                  .replace(/^```html\s*/, '') // Remove opening markdown code block
+                  .replace(/```\s*$/, '') // Remove closing markdown code block
+                  .trim() 
+              }}
             />
           </div>
         </div>
