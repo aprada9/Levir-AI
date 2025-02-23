@@ -1,7 +1,7 @@
-import { pgTable, text, bigint, jsonb, uuid, timestamp, integer } from 'drizzle-orm/pg-core';
+import { pgTable, text, jsonb, uuid, timestamp, integer, serial } from 'drizzle-orm/pg-core';
 
 export const messages = pgTable('messages', {
-  id: bigint('id', { mode: 'number' }).primaryKey(),
+  id: serial('id').primaryKey(),
   content: text('content').notNull(),
   chatId: text('chatId').notNull(),
   messageId: text('messageId').notNull(),
