@@ -1,20 +1,5 @@
-import ChatWindow from '@/components/ChatWindow';
-import { Metadata } from 'next';
-import { Suspense } from 'react';
+import { redirect } from 'next/navigation'
 
-export const metadata: Metadata = {
-  title: 'Chat - Perplexica',
-  description: 'Chat with the internet, chat with Perplexica.',
-};
-
-const Home = () => {
-  return (
-    <div>
-      <Suspense>
-        <ChatWindow />
-      </Suspense>
-    </div>
-  );
-};
-
-export default Home;
+export default function Home() {
+  redirect('/search')
+}

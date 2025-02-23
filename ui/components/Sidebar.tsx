@@ -1,11 +1,14 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { BookOpenText, Home, Search, SquarePen, Settings, FileSearch, Telescope, History } from 'lucide-react';
+import { BookOpenText, Home, Search, SquarePen, Settings, FileSearch, Telescope, History, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { useSelectedLayoutSegments } from 'next/navigation';
 import React, { useState, type ReactNode } from 'react';
 import Layout from './Layout';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
+import type { Session } from '@supabase/auth-helpers-nextjs';
 
 const VerticalIconContainer = ({ children }: { children: ReactNode }) => {
   return (
@@ -13,9 +16,21 @@ const VerticalIconContainer = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const Sidebar = ({ children }: { children: React.ReactNode }) => {
+interface SidebarProps {
+  children: React.ReactNode;
+  session: Session | null;
+}
+
+const Sidebar = ({ children, session }: SidebarProps) => {
   const segments = useSelectedLayoutSegments();
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  const router = useRouter();
+  const supabase = createClientComponentClient();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.refresh();
+  };
 
   const mainNavLinks = [
     {
@@ -26,8 +41,8 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
       subItems: [
         {
           icon: Search,
-          href: '/',
-          active: segments.length === 0 || segments.includes('c'),
+          href: '/search',
+          active: segments.includes('search'),
           label: 'Search',
         },
         {
@@ -131,6 +146,16 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
               </div>
             ))}
           </div>
+
+          {session && (
+            <button
+              onClick={handleSignOut}
+              className="flex items-center p-3 rounded-lg transition-colors text-black/70 dark:text-white/70 hover:bg-black/10 dark:hover:bg-white/10 w-full mt-auto"
+            >
+              <LogOut size={24} />
+              <span className="ml-3">Sign Out</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -154,6 +179,16 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
             <p className="text-xs">{link.label}</p>
           </Link>
         ))}
+
+        {session && (
+          <button
+            onClick={handleSignOut}
+            className="relative flex flex-col items-center space-y-1 text-center w-full text-black/70 dark:text-white/70"
+          >
+            <LogOut />
+            <p className="text-xs">Sign Out</p>
+          </button>
+        )}
       </div>
 
       <Layout>{children}</Layout>

@@ -3,6 +3,7 @@ import { Message } from './ChatWindow';
 import { useEffect, useState } from 'react';
 import { formatTimeDifference } from '@/lib/utils';
 import DeleteChat from './DeleteChat';
+import { useRouter } from 'next/navigation';
 
 const Navbar = ({
   chatId,
@@ -13,6 +14,7 @@ const Navbar = ({
 }) => {
   const [title, setTitle] = useState<string>('');
   const [timeAgo, setTimeAgo] = useState<string>('');
+  const router = useRouter();
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -63,7 +65,12 @@ const Navbar = ({
           size={17}
           className="active:scale-95 transition duration-100 cursor-pointer"
         />
-        <DeleteChat redirect chatId={chatId} chats={[]} setChats={() => {}} />
+        <DeleteChat 
+          chatId={chatId} 
+          onDelete={() => {
+            router.push('/search');
+          }} 
+        />
       </div>
     </div>
   );

@@ -1,122 +1,118 @@
-import { Trash } from 'lucide-react';
-import {
-  Description,
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-  Transition,
-  TransitionChild,
-} from '@headlessui/react';
+'use client';
+
+import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useState } from 'react';
 import { toast } from 'sonner';
-import { Chat } from '@/app/library/page';
 
-const DeleteChat = ({
-  chatId,
-  chats,
-  setChats,
-  redirect = false,
-}: {
+export interface Chat {
+  id: string;
+  title: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface DeleteChatProps {
   chatId: string;
-  chats: Chat[];
-  setChats: (chats: Chat[]) => void;
-  redirect?: boolean;
-}) => {
-  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  onDelete: () => void;
+}
+
+const DeleteChat = ({ chatId, onDelete }: DeleteChatProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    setLoading(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/chats/${chatId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
+      setIsDeleting(true);
+      const response = await fetch(`/api/chats/${chatId}`, {
+        method: 'DELETE',
+      });
 
-      if (res.status != 200) {
+      if (!response.ok) {
         throw new Error('Failed to delete chat');
       }
 
-      const newChats = chats.filter((chat) => chat.id !== chatId);
-
-      setChats(newChats);
-
-      if (redirect) {
-        window.location.href = '/';
-      }
-    } catch (err: any) {
-      toast.error(err.message);
+      onDelete();
+      setIsOpen(false);
+      toast.success('Chat deleted successfully');
+    } catch (error) {
+      console.error('Error deleting chat:', error);
+      toast.error('Failed to delete chat');
     } finally {
-      setConfirmationDialogOpen(false);
-      setLoading(false);
+      setIsDeleting(false);
     }
   };
 
   return (
     <>
       <button
-        onClick={() => {
-          setConfirmationDialogOpen(true);
-        }}
-        className="bg-transparent text-red-400 hover:scale-105 transition duration-200"
+        onClick={() => setIsOpen(true)}
+        className="text-red-500 hover:text-red-700"
       >
-        <Trash size={17} />
+        Delete
       </button>
-      <Transition appear show={confirmationDialogOpen} as={Fragment}>
+
+      <Transition appear show={isOpen} as={Fragment}>
         <Dialog
           as="div"
-          className="relative z-50"
-          onClose={() => {
-            if (!loading) {
-              setConfirmationDialogOpen(false);
-            }
-          }}
+          className="relative z-10"
+          onClose={() => setIsOpen(false)}
         >
-          <DialogBackdrop className="fixed inset-0 bg-black/30" />
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <TransitionChild
+              <Transition.Child
                 as={Fragment}
-                enter="ease-out duration-200"
+                enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
                 enterTo="opacity-100 scale-100"
-                leave="ease-in duration-100"
-                leaveFrom="opacity-100 scale-200"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <DialogPanel className="w-full max-w-md transform rounded-2xl bg-light-secondary dark:bg-dark-secondary border border-light-200 dark:border-dark-200 p-6 text-left align-middle shadow-xl transition-all">
-                  <DialogTitle className="text-lg font-medium leading-6 dark:text-white">
-                    Delete Confirmation
-                  </DialogTitle>
-                  <Description className="text-sm dark:text-white/70 text-black/70">
-                    Are you sure you want to delete this chat?
-                  </Description>
-                  <div className="flex flex-row items-end justify-end space-x-4 mt-6">
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900"
+                  >
+                    Delete Chat
+                  </Dialog.Title>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500">
+                      Are you sure you want to delete this chat? This action
+                      cannot be undone.
+                    </p>
+                  </div>
+
+                  <div className="mt-4 flex justify-end space-x-2">
                     <button
-                      onClick={() => {
-                        if (!loading) {
-                          setConfirmationDialogOpen(false);
-                        }
-                      }}
-                      className="text-black/50 dark:text-white/50 text-sm hover:text-black/70 hover:dark:text-white/70 transition duration-200"
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+                      onClick={handleDelete}
+                      disabled={isDeleting}
+                    >
+                      {isDeleting ? 'Deleting...' : 'Delete'}
+                    </button>
+                    <button
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
+                      onClick={() => setIsOpen(false)}
                     >
                       Cancel
                     </button>
-                    <button
-                      onClick={handleDelete}
-                      className="text-red-400 text-sm hover:text-red-500 transition duration200"
-                    >
-                      Delete
-                    </button>
                   </div>
-                </DialogPanel>
-              </TransitionChild>
+                </Dialog.Panel>
+              </Transition.Child>
             </div>
           </div>
         </Dialog>
