@@ -121,8 +121,16 @@ serve(async (req) => {
     // Log request details
     console.log('Processing request:', req.method);
     
-    const { fileName, fileType, fileSize, fileContent } = await req.json()
-    console.log('Received file details:', { fileName, fileType, fileSize });
+    const { fileName, fileType, fileSize, fileContent, userId } = await req.json();
+    
+    // More explicit logging of the userId
+    console.log('Received file details:', { 
+      fileName, 
+      fileType, 
+      fileSize, 
+      hasUserId: !!userId,
+      userId: userId ? `${userId.substring(0,6)}...` : 'null' // Log part of ID for privacy
+    });
 
     if (!fileContent) {
       throw new Error('No file content provided')
@@ -294,16 +302,49 @@ serve(async (req) => {
     const docxBase64 = btoa(String.fromCharCode(...new Uint8Array(docxBuffer)));
 
     // Store result in database with HTML formatting preserved
-    console.log('Storing result in database...');
+    console.log('Storing result in database with user ID:', userId ? `${userId.substring(0,6)}...` : 'null');
+    
+    // Validate user ID format (should be a UUID)
+    let validUserId = null;
+    if (userId && userId.length > 0) {
+      // Basic UUID validation (check format)
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (uuidRegex.test(userId)) {
+        console.log('User ID is valid UUID format');
+        validUserId = userId;
+      } else {
+        console.log('User ID is not a valid UUID format:', userId);
+      }
+    } else {
+      console.log('No user ID provided');
+    }
+    
+    // Create database record object with all fields
+    const dbRecord: any = {
+      original_filename: fileName,
+      processed_text: processedText,
+      file_type: fileType,
+      file_size: fileSize,
+      docx_content: docxBase64
+    };
+    
+    // Only add user_id if it's a valid UUID
+    if (validUserId) {
+      console.log('Adding validated user_id to database record');
+      dbRecord.user_id = validUserId;
+    } else {
+      console.log('No valid user_id available, record will be created without user association');
+    }
+    
+    console.log('Database record prepared:', {
+      ...dbRecord,
+      user_id: dbRecord.user_id ? `${dbRecord.user_id.substring(0,6)}...` : 'null',
+      docx_content: '[BINARY DATA]'
+    });
+    
     const { data: dbData, error: dbError } = await supabase
       .from('ocr_results')
-      .insert({
-        original_filename: fileName,
-        processed_text: processedText, // Store the HTML version
-        file_type: fileType,
-        file_size: fileSize,
-        docx_content: docxBase64
-      })
+      .insert(dbRecord)
       .select()
       .single();
 
@@ -311,6 +352,8 @@ serve(async (req) => {
       console.error('Database error:', dbError);
       throw new Error(`Database error: ${dbError.message}`)
     }
+    
+    console.log('Successfully stored in database with ID:', dbData.id);
 
     // Delete temporary file
     console.log('Cleaning up temporary file...');

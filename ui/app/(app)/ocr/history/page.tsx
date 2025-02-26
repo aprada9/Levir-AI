@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { FileText, FileIcon, Copy, Eye, Download, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -15,23 +15,15 @@ interface OCRResult {
   file_size: number;
   docx_content: string;
   created_at: string;
+  user_id: string;
 }
-
-// Create a singleton Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing environment variables: NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY not set');
-}
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const OCRHistoryPage = () => {
   const [results, setResults] = useState<OCRResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedResult, setSelectedResult] = useState<OCRResult | null>(null);
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -39,9 +31,20 @@ const OCRHistoryPage = () => {
         console.log('Fetching OCR history...');
         setError(null);
         
+        // Check if user is authenticated first
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          setError('You must be logged in to view your OCR history');
+          setLoading(false);
+          return;
+        }
+        
+        console.log('Authenticated as user:', session.user.id);
+        
         const { data, error } = await supabase
           .from('ocr_results')
           .select('*')
+          .eq('user_id', session.user.id) // Explicitly filter by user_id for added safety
           .order('created_at', { ascending: false });
 
         if (error) {
@@ -71,7 +74,7 @@ const OCRHistoryPage = () => {
     };
 
     fetchHistory();
-  }, []);
+  }, [supabase]);
 
   const handleCopyToClipboard = async (text: string) => {
     try {
