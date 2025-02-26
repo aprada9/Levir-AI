@@ -23,6 +23,9 @@ export const handleConnection = async (
     const searchParams = new URL(request.url, `http://${request.headers.host}`)
       .searchParams;
 
+    const userId = searchParams.get('user_id');
+    const token = searchParams.get('token');
+
     const [chatModelProviders, embeddingModelProviders] = await Promise.all([
       getAvailableChatModelProviders(),
       getAvailableEmbeddingModelProviders(),
@@ -104,7 +107,7 @@ export const handleConnection = async (
     ws.on(
       'message',
       async (message) =>
-        await handleMessage(message.toString(), ws, llm, embeddings),
+        await handleMessage(message.toString(), ws, llm, embeddings, userId),
     );
 
     ws.on('close', () => logger.debug('Connection closed'));

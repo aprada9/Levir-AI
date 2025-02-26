@@ -4,37 +4,63 @@ import { useEffect, useState } from 'react';
 import { formatTimeDifference } from '@/lib/utils';
 import DeleteChat from '@/components/DeleteChat';
 import Link from 'next/link';
-import { Metadata } from 'next';
-import { Chat } from '@/components/DeleteChat';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+
+export interface Chat {
+  id: string;
+  title: string;
+  createdAt: Date;
+  focusMode: string;
+  files: any[];
+  user_id: string;
+}
 
 export default function LibraryPage() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await fetch('/api/chats');
-        if (!response.ok) {
-          throw new Error('Failed to fetch chats');
+        // Check if user is authenticated first
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          setError('You must be logged in to view your chat history');
+          setLoading(false);
+          return;
         }
+
+        const response = await fetch('/api/chats');
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch chats');
+        }
+        
         const data = await response.json();
+        
+        // Map the data to the expected format with proper date conversion
         setChats(data.map((chat: any) => ({
           ...chat,
           createdAt: new Date(chat.createdAt),
-          updatedAt: new Date(chat.createdAt), // Using createdAt as updatedAt for now
+          updatedAt: new Date(chat.createdAt),
         })));
       } catch (err) {
         console.error('Error fetching chats:', err);
-        setError('Failed to load chats');
+        setError(err instanceof Error ? err.message : 'Failed to load chats');
       } finally {
         setLoading(false);
       }
     };
 
     fetchChats();
-  }, []);
+  }, [supabase]);
+
+  const handleDeleteChat = (chatId: string) => {
+    setChats(prevChats => prevChats.filter(chat => chat.id !== chatId));
+  };
 
   if (loading) {
     return (
@@ -79,7 +105,7 @@ export default function LibraryPage() {
               <div className="flex items-center space-x-2">
                 <DeleteChat
                   chatId={chat.id}
-                  onDelete={() => setChats(chats.filter(c => c.id !== chat.id))}
+                  onDelete={() => handleDeleteChat(chat.id)}
                 />
               </div>
             </div>

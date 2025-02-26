@@ -20,6 +20,7 @@ export const chats = pgTable('chats', {
   createdAt: text('createdAt').notNull(),
   focusMode: text('focusMode').notNull(),
   files: jsonb('files').notNull(),
+  user_id: uuid('user_id'),
 });
 
 export const ocrResults = pgTable('ocr_results', {

@@ -151,6 +151,7 @@ export const handleMessage = async (
   ws: WebSocket,
   llm: BaseChatModel,
   embeddings: Embeddings,
+  userId?: string | null
 ) => {
   try {
     const parsedWSMessage = JSON.parse(message) as WSMessage;
@@ -211,15 +212,24 @@ export const handleMessage = async (
 
           if (!chat) {
             console.log('Creating new chat:', parsedMessage.chatId); // Debug log
+            
+            // Create new chat with basic fields first
+            const chatData: any = {
+              id: parsedMessage.chatId,
+              title: parsedMessage.content,
+              createdAt: new Date().toString(),
+              focusMode: parsedWSMessage.focusMode,
+              files: JSON.stringify([]),
+            };
+            
+            // Add user_id if available
+            if (userId) {
+              chatData.user_id = userId;
+            }
+            
             await db
               .insert(chats)
-              .values({
-                id: parsedMessage.chatId,
-                title: parsedMessage.content,
-                createdAt: new Date().toString(),
-                focusMode: parsedWSMessage.focusMode,
-                files: JSON.stringify([]),
-              })
+              .values(chatData)
               .execute();
           }
 

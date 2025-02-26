@@ -12,6 +12,7 @@ import { getSuggestions } from '@/lib/actions';
 import { Settings } from 'lucide-react';
 import Link from 'next/link';
 import NextError from 'next/error';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export type Message = {
   messageId: string;
@@ -35,24 +36,37 @@ const useSocket = (
   setError: (error: boolean) => void,
 ) => {
   const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
   const retryCountRef = useRef(0);
   const isCleaningUpRef = useRef(false);
-  const MAX_RETRIES = 3;
-  const INITIAL_BACKOFF = 1000; // 1 second
   const isConnectionErrorRef = useRef(false);
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const supabase = createClientComponentClient();
 
-  const getBackoffDelay = (retryCount: number) => {
-    return Math.min(INITIAL_BACKOFF * Math.pow(2, retryCount), 10000); // Cap at 10 seconds
+  const MAX_RETRIES = 5;
+
+  // Exponential backoff with jitter for reconnections
+  const getBackoffDelay = (attempt: number) => {
+    const baseDelay = 1000; // 1 second base
+    const maxDelay = 30000; // Max 30 seconds
+    const exponentialDelay = Math.min(
+      maxDelay,
+      baseDelay * Math.pow(2, attempt - 1),
+    );
+    // Add some random jitter to avoid thundering herd
+    return exponentialDelay + Math.random() * 1000;
   };
 
   useEffect(() => {
     const connectWs = async () => {
       if (wsRef.current?.readyState === WebSocket.OPEN) {
-        wsRef.current.close();
+        console.debug(new Date(), 'ws:already_connected');
+        return;
       }
 
       try {
+        // Get current user session for authentication
+        const { data: { session } } = await supabase.auth.getSession();
+        
         let chatModel = localStorage.getItem('chatModel');
         let chatModelProvider = localStorage.getItem('chatModelProvider');
         let embeddingModel = localStorage.getItem('embeddingModel');
@@ -201,6 +215,12 @@ const useSocket = (
 
         searchParams.append('embeddingModel', embeddingModel!);
         searchParams.append('embeddingModelProvider', embeddingModelProvider);
+        
+        // Add user authentication token if available
+        if (session?.access_token) {
+          searchParams.append('token', session.access_token);
+          searchParams.append('user_id', session.user.id);
+        }
 
         wsURL.search = searchParams.toString();
 
