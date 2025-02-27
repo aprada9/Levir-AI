@@ -115,6 +115,12 @@ export default function LoginForm() {
               'Sign In'
             )}
           </button>
+          <a
+            href="/register"
+            className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+          >
+            Create an account
+          </a>
         </div>
       </form>
     </div>
