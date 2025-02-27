@@ -331,7 +331,7 @@ serve(async (req) => {
     // Only add user_id if it's a valid UUID
     if (validUserId) {
       console.log('Adding validated user_id to database record');
-      dbRecord.user_id = validUserId;
+      dbRecord.user_id = validUserId; // Use user_id to match the actual database column
     } else {
       console.log('No valid user_id available, record will be created without user association');
     }

@@ -1,11 +1,13 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { File, LoaderCircle, Upload, FileText, FileIcon, Copy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, convertInchesToTwip, WidthType, AlignmentType } from 'docx';
 import styles from './ocr.module.css';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { getAuthToken } from '@/lib/auth';
 
 interface OCRResult {
   text: string;
@@ -109,7 +111,23 @@ const OCRPage = () => {
   const [result, setResult] = useState<OCRResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [authToken, setAuthToken] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const supabase = createClientComponentClient();
+  
+  // Fetch auth token on component mount
+  useEffect(() => {
+    const fetchAuthToken = async () => {
+      try {
+        const token = await getAuthToken(supabase);
+        setAuthToken(token);
+      } catch (error) {
+        console.error('Error fetching auth token:', error);
+      }
+    };
+    
+    fetchAuthToken();
+  }, []);
 
   const handleTextDownload = () => {
     if (!result) return;
@@ -205,13 +223,21 @@ const OCRPage = () => {
     formData.append('file', file);
 
     try {
-      const res = await fetch(
-        `/api/ocr`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      );
+      // Prepare request options
+      const requestOptions: RequestInit = {
+        method: 'POST',
+        body: formData,
+      };
+      
+      // Add authorization header if we have a token
+      if (authToken) {
+        requestOptions.headers = {
+          'Authorization': `Bearer ${authToken}`
+        };
+      }
+      
+      // Make the API request
+      const res = await fetch(`/api/ocr`, requestOptions);
 
       if (!res.ok) {
         const error = await res.json();

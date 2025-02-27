@@ -12,6 +12,16 @@ router.post('/', upload.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
+    // Get the user ID from the authenticated user in the request
+    // @ts-expect-error The auth user is added by the auth middleware
+    const userId = req.user?.id;
+    
+    if (!userId) {
+      console.warn('No user ID found in the request. OCR result will not be associated with a user.');
+    } else {
+      console.log('Processing OCR with user ID:', userId);
+    }
+
     const supabase = createClient(
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -23,11 +33,20 @@ router.post('/', upload.single('file'), async (req, res) => {
     formData.append('fileType', file.mimetype);
     formData.append('fileSize', file.size.toString());
     formData.append('fileContent', file.buffer.toString('base64'));
+    
+    // Add user ID to the request body
+    const requestBody = {
+      fileName: file.originalname,
+      fileType: file.mimetype,
+      fileSize: file.size,
+      fileContent: file.buffer.toString('base64'),
+      userId: userId || null
+    };
 
     const { data: functionData, error: functionError } = await supabase.functions.invoke(
       'process-ocr',
       {
-        body: formData,
+        body: requestBody,
       }
     );
 

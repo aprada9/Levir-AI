@@ -31,5 +31,6 @@ export const ocrResults = pgTable('ocr_results', {
   fileSize: integer('file_size'),
   docxContent: text('docx_content'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+  userId: uuid('user_id')
 });
