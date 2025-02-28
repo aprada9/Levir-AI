@@ -1,9 +1,9 @@
 # Perplexica Project Context
 
 ## Project Overview
-This is Perplexica, an AI-powered tool with multiple functionalities:
+Perplexica is an AI-powered tool with two primary functionalities:
 1. Search: A Perplexity-like search tool that uses advanced ML algorithms for web search
-2. OCR: Image text scanning and extraction capability
+2. OCR: Image text scanning and extraction capability with user-specific storage
 
 ## Core Functionalities
 
@@ -23,11 +23,19 @@ This is Perplexica, an AI-powered tool with multiple functionalities:
 ### OCR Component
 - Handles image uploads up to 10MB
 - Supports formats: PNG, JPEG, GIF, WebP
-- Uses GPT-4 Vision for text extraction
+- Uses GPT-4o Vision for text extraction
 - Provides multiple output formats:
   - Plain text
   - DOCX with formatting
-- Includes database storage for processed results
+- Includes database storage for processed results with user association
+- Implements user-specific OCR history and management
+- Supports downloading processed documents in multiple formats
+
+## User Management
+- Authentication via Supabase Auth
+- User-specific OCR result storage and retrieval
+- Row-level security policies for data protection
+- Service role access for administrative functions
 
 ## Project Structure
 - /src: Core backend implementation
@@ -35,18 +43,27 @@ This is Perplexica, an AI-powered tool with multiple functionalities:
   - /search: Search functionality
   - /prompts: LLM prompts
   - /chains: LangChain implementations
+  - /db: Database schema and connections
+  - /scripts: Migration and utility scripts
 - /ui: Frontend implementation
+  - /app: Next.js application routes
+  - /components: Reusable UI components
+  - /lib: Utility functions
 - /supabase: Database and functions
-- /docs: Documentation
+  - /migrations: Database schema migrations
+  - /functions: Edge Functions for OCR processing
 - /drizzle: Database migrations and schema
+- Docker configuration for containerized deployment
 
 ## Key Technologies
-- Frontend: Next.js
+- Frontend: Next.js 14
 - Backend: Express.js
-- Database: Supabase
+- Database: Supabase (PostgreSQL)
 - Search: SearxNG
-- ML/AI: LangChain, OpenAI GPT-4
-- OCR: GPT-4 Vision API
+- ML/AI: LangChain, OpenAI GPT-4o
+- OCR: GPT-4o Vision API
+- Authentication: Supabase Auth
+- Containerization: Docker
 
 ## Database Schema
 - ocr_results table:
@@ -55,16 +72,29 @@ This is Perplexica, an AI-powered tool with multiple functionalities:
   - processed_text: text
   - file_type: text
   - file_size: integer
-  - docx_content: text
+  - docx_content: text (base64 encoded)
   - created_at: timestamp
   - updated_at: timestamp
+  - user_id: UUID (foreign key to auth.users)
 
 ## API Endpoints
 - /api/search: Main search endpoint
 - /api/ocr: OCR processing endpoint
+- /api/ocr/download: DOCX download endpoint
+- /api/debug-ocr: Debugging endpoint for OCR
+
+## Edge Functions
+- process-ocr: Handles image processing with GPT-4o Vision
+- download-docx: Generates and serves DOCX files
+
+## Security Features
+- Row-level security for user data
+- Service role access for administrative functions
+- User authentication and authorization
+- Secure file handling and storage
 
 ## Environment Setup
 - Requires OpenAI API key
-- Supabase configuration
+- Supabase configuration (URL, anon key, service role key)
 - SearxNG instance
-- Optional: Custom OpenAI endpoint configuration 
+- Docker environment for containerized deployment
