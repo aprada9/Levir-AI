@@ -6,6 +6,7 @@ import Attach from './MessageInputActions/Attach';
 import CopilotToggle from './MessageInputActions/Copilot';
 import { File } from './ChatWindow';
 import AttachSmall from './MessageInputActions/AttachSmall';
+import { useLanguage } from '@/i18n/client';
 
 const MessageInput = ({
   sendMessage,
@@ -26,6 +27,7 @@ const MessageInput = ({
   const [message, setMessage] = useState('');
   const [textareaRows, setTextareaRows] = useState(1);
   const [mode, setMode] = useState<'multi' | 'single'>('single');
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (textareaRows >= 2 && message && mode === 'single') {
@@ -39,24 +41,26 @@ const MessageInput = ({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const activeElement = document.activeElement;
-
-      const isInputFocused =
-        activeElement?.tagName === 'INPUT' ||
-        activeElement?.tagName === 'TEXTAREA' ||
-        activeElement?.hasAttribute('contenteditable');
-
-      if (e.key === '/' && !isInputFocused) {
+      // Check if the key is '/' and either the textarea is empty or not focused
+      if (
+        e.key === '/' &&
+        (message === '' || document.activeElement !== inputRef.current)
+      ) {
         e.preventDefault();
         inputRef.current?.focus();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown);
     };
+  }, [message]);
+
+  useEffect(() => {
+    // Focus input on mount
+    inputRef.current?.focus();
   }, []);
 
   return (
@@ -95,7 +99,7 @@ const MessageInput = ({
           setTextareaRows(Math.ceil(height / props.rowHeight));
         }}
         className="transition bg-transparent dark:placeholder:text-white/50 placeholder:text-sm text-sm dark:text-white resize-none focus:outline-none w-full px-2 max-h-24 lg:max-h-36 xl:max-h-48 flex-grow flex-shrink"
-        placeholder="Ask a follow-up"
+        placeholder={t('search.placeholder')}
       />
       {mode === 'single' && (
         <div className="flex flex-row items-center space-x-4">
@@ -126,7 +130,7 @@ const MessageInput = ({
             />
             <button
               disabled={message.trim().length === 0 || loading}
-              className="bg-[#24A0ED] text-white text-black/50 dark:disabled:text-white/50 hover:bg-opacity-85 transition duration-100 disabled:bg-[#e0e0dc79] dark:disabled:bg-[#ececec21] rounded-full p-2"
+              className="bg-[#24A0ED] text-white disabled:text-black/50 dark:disabled:text-white/50 hover:bg-opacity-85 transition duration-100 disabled:bg-[#e0e0dc79] dark:disabled:bg-[#ececec21] rounded-full p-2"
             >
               <ArrowUp className="bg-background" size={17} />
             </button>

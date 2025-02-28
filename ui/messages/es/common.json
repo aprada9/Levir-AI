@@ -1,0 +1,42 @@
+{
+  "appName": "Perplexica",
+  "language": "Idioma",
+  "languageName": "Español",
+  "nav": {
+    "search": "Buscar",
+    "history": "Historial",
+    "discover": "Descubrir",
+    "ocr": "OCR",
+    "ocrHistory": "Historial",
+    "settings": "Configuración",
+    "signOut": "Cerrar Sesión"
+  },
+  "search": {
+    "placeholder": "Pregúntame lo que quieras...",
+    "button": "Buscar",
+    "researchBeginsHere": "La investigación comienza aquí."
+  },
+  "ocr": {
+    "title": "OCR - Reconocimiento de Texto",
+    "uploadButton": "Subir Imagen",
+    "processingMessage": "Procesando imagen...",
+    "downloadButton": "Descargar"
+  },
+  "footer": {
+    "language": "Idioma",
+    "theme": "Tema",
+    "copyright": "© 2023-2024 Perplexica"
+  },
+  "time": {
+    "ago": "atrás"
+  },
+  "chat": {
+    "delete": "Eliminar",
+    "deleteTitle": "Eliminar Chat",
+    "deleteConfirmation": "¿Estás seguro de que quieres eliminar este chat? Esta acción no se puede deshacer.",
+    "deleting": "Eliminando...",
+    "cancel": "Cancelar",
+    "deleteSuccess": "Chat eliminado con éxito",
+    "deleteFailed": "Error al eliminar el chat"
+  }
+} 

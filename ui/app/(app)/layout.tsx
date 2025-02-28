@@ -4,6 +4,9 @@ import { cn } from '@/lib/utils'
 import Sidebar from '@/components/Sidebar'
 import { Toaster } from 'sonner'
 import ThemeProvider from '@/components/theme/Provider'
+import { LanguageProvider } from '@/i18n/client'
+import LangAttributeUpdater from '@/i18n/LangAttributeUpdater'
+import Footer from '@/components/layout/Footer'
 
 export default async function AppLayout({
   children,
@@ -18,10 +21,18 @@ export default async function AppLayout({
   return (
     <div className="h-screen">
       <ThemeProvider>
-        <Sidebar session={session}>
-          {children}
-        </Sidebar>
-        <Toaster richColors />
+        <LanguageProvider>
+          <LangAttributeUpdater />
+          <Sidebar session={session}>
+            <div className="flex flex-col min-h-screen">
+              <div className="flex-grow">
+                {children}
+              </div>
+              <Footer />
+            </div>
+          </Sidebar>
+          <Toaster richColors />
+        </LanguageProvider>
       </ThemeProvider>
     </div>
   )

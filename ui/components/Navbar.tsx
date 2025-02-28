@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { formatTimeDifference } from '@/lib/utils';
 import DeleteChat from './DeleteChat';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/i18n/client';
 
 const Navbar = ({
   chatId,
@@ -15,6 +16,7 @@ const Navbar = ({
   const [title, setTitle] = useState<string>('');
   const [timeAgo, setTimeAgo] = useState<string>('');
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -56,7 +58,7 @@ const Navbar = ({
       </a>
       <div className="hidden lg:flex flex-row items-center justify-center space-x-2">
         <Clock size={17} />
-        <p className="text-xs">{timeAgo} ago</p>
+        <p className="text-xs">{timeAgo} {t('time.ago')}</p>
       </div>
       <p className="hidden lg:flex">{title}</p>
 

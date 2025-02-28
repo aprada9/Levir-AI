@@ -3,6 +3,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useState } from 'react';
 import { toast } from 'sonner';
+import { useLanguage } from '@/i18n/client';
 
 export interface Chat {
   id: string;
@@ -19,6 +20,7 @@ interface DeleteChatProps {
 const DeleteChat = ({ chatId, onDelete }: DeleteChatProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { t } = useLanguage();
 
   const handleDelete = async () => {
     try {
@@ -33,10 +35,10 @@ const DeleteChat = ({ chatId, onDelete }: DeleteChatProps) => {
 
       onDelete();
       setIsOpen(false);
-      toast.success('Chat deleted successfully');
+      toast.success(t('chat.deleteSuccess'));
     } catch (error) {
       console.error('Error deleting chat:', error);
-      toast.error('Failed to delete chat');
+      toast.error(t('chat.deleteFailed'));
     } finally {
       setIsDeleting(false);
     }
@@ -48,7 +50,7 @@ const DeleteChat = ({ chatId, onDelete }: DeleteChatProps) => {
         onClick={() => setIsOpen(true)}
         className="text-red-500 hover:text-red-700"
       >
-        Delete
+        {t('chat.delete')}
       </button>
 
       <Transition appear show={isOpen} as={Fragment}>
@@ -85,12 +87,11 @@ const DeleteChat = ({ chatId, onDelete }: DeleteChatProps) => {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Delete Chat
+                    {t('chat.deleteTitle')}
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                      Are you sure you want to delete this chat? This action
-                      cannot be undone.
+                      {t('chat.deleteConfirmation')}
                     </p>
                   </div>
 
@@ -101,14 +102,14 @@ const DeleteChat = ({ chatId, onDelete }: DeleteChatProps) => {
                       onClick={handleDelete}
                       disabled={isDeleting}
                     >
-                      {isDeleting ? 'Deleting...' : 'Delete'}
+                      {isDeleting ? t('chat.deleting') : t('chat.delete')}
                     </button>
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
                       onClick={() => setIsOpen(false)}
                     >
-                      Cancel
+                      {t('chat.cancel')}
                     </button>
                   </div>
                 </Dialog.Panel>

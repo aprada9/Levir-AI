@@ -9,6 +9,7 @@ import Layout from './Layout';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import type { Session } from '@supabase/auth-helpers-nextjs';
+import { useLanguage } from '@/i18n/client';
 
 const VerticalIconContainer = ({ children }: { children: ReactNode }) => {
   return (
@@ -26,6 +27,7 @@ const Sidebar = ({ children, session }: SidebarProps) => {
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClientComponentClient();
+  const { t } = useLanguage();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -43,42 +45,49 @@ const Sidebar = ({ children, session }: SidebarProps) => {
           icon: Search,
           href: '/search',
           active: segments.includes('search'),
-          label: 'Search',
-        },
-        {
-          icon: Telescope,
-          href: '/discover',
-          active: segments.includes('discover'),
-          label: 'Discover',
+          label: t('nav.search'),
         },
         {
           icon: History,
           href: '/library',
           active: segments.includes('library'),
-          label: 'History',
+          label: t('nav.history'),
         },
-      ]
+        {
+          icon: Telescope,
+          href: '/discover',
+          active: segments.includes('discover'),
+          label: t('nav.discover'),
+        },
+      ],
     },
     {
       icon: FileSearch,
       href: '/ocr',
       active: segments.includes('ocr'),
-      label: 'OCR',
+      label: t('nav.ocr'),
       subItems: [
         {
           icon: FileSearch,
           href: '/ocr',
-          active: segments.includes('ocr') && !segments.includes('history'),
-          label: 'Scan',
+          active: segments.length === 1 && segments[0] === 'ocr',
+          label: t('nav.ocr'),
         },
         {
           icon: History,
           href: '/ocr/history',
-          active: segments.includes('ocr') && segments.includes('history'),
-          label: 'History',
-        }
-      ]
-    }
+          active: segments.includes('history'),
+          label: t('nav.ocrHistory'),
+        },
+      ],
+    },
+    {
+      icon: Settings,
+      href: '/settings',
+      active: segments.includes('settings'),
+      label: t('nav.settings'),
+      subItems: [],
+    },
   ];
 
   return (
@@ -153,7 +162,7 @@ const Sidebar = ({ children, session }: SidebarProps) => {
               className="flex items-center p-3 rounded-lg transition-colors text-black/70 dark:text-white/70 hover:bg-black/10 dark:hover:bg-white/10 w-full mt-auto"
             >
               <LogOut size={24} />
-              <span className="ml-3">Sign Out</span>
+              <span className="ml-3">{t('nav.signOut')}</span>
             </button>
           )}
         </div>
@@ -186,7 +195,7 @@ const Sidebar = ({ children, session }: SidebarProps) => {
             className="relative flex flex-col items-center space-y-1 text-center w-full text-black/70 dark:text-white/70"
           >
             <LogOut />
-            <p className="text-xs">Sign Out</p>
+            <p className="text-xs">{t('nav.signOut')}</p>
           </button>
         )}
       </div>

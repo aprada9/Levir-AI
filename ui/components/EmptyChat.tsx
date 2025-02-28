@@ -3,6 +3,7 @@ import EmptyChatMessageInput from './EmptyChatMessageInput';
 import { useState } from 'react';
 import { File } from './ChatWindow';
 import Link from 'next/link';
+import { useLanguage } from '@/i18n/client';
 
 const EmptyChat = ({
   sendMessage,
@@ -26,6 +27,7 @@ const EmptyChat = ({
   setFiles: (files: File[]) => void;
 }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <div className="relative">
@@ -36,7 +38,7 @@ const EmptyChat = ({
       </div>
       <div className="flex flex-col items-center justify-center min-h-screen max-w-screen-sm mx-auto p-2 space-y-8">
         <h2 className="text-black/70 dark:text-white/70 text-3xl font-medium -mt-8">
-          Research begins here.
+          {t('search.researchBeginsHere')}
         </h2>
         <EmptyChatMessageInput
           sendMessage={sendMessage}
