@@ -16,6 +16,10 @@ import {
   youtubeSearchResponsePrompt,
   youtubeSearchRetrieverPrompt,
 } from './youtubeSearch';
+import {
+  spanishLawSearchResponsePrompt,
+  spanishLawSearchRetrieverPrompt,
+} from './spanishLawSearch';
 
 export default {
   webSearchResponsePrompt,
@@ -29,4 +33,6 @@ export default {
   writingAssistantPrompt,
   youtubeSearchResponsePrompt,
   youtubeSearchRetrieverPrompt,
+  spanishLawSearchResponsePrompt,
+  spanishLawSearchRetrieverPrompt,
 };

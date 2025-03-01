@@ -7,32 +7,7 @@ import {
   Transition,
 } from '@headlessui/react';
 import { Fragment } from 'react';
-
-const OptimizationModes = [
-  {
-    key: 'speed',
-    title: 'Speed',
-    description: 'Prioritize speed and get the quickest possible answer.',
-    icon: <Zap size={20} className="text-[#FF9800]" />,
-  },
-  {
-    key: 'balanced',
-    title: 'Balanced',
-    description: 'Find the right balance between speed and accuracy',
-    icon: <Sliders size={20} className="text-[#4CAF50]" />,
-  },
-  {
-    key: 'quality',
-    title: 'Quality (Soon)',
-    description: 'Get the most thorough and accurate answer',
-    icon: (
-      <Star
-        size={16}
-        className="text-[#2196F3] dark:text-[#BBDEFB] fill-[#BBDEFB] dark:fill-[#2196F3]"
-      />
-    ),
-  },
-];
+import { useLanguage } from '@/i18n/client';
 
 const Optimization = ({
   optimizationMode,
@@ -41,6 +16,34 @@ const Optimization = ({
   optimizationMode: string;
   setOptimizationMode: (mode: string) => void;
 }) => {
+  const { t } = useLanguage();
+
+  const OptimizationModes = [
+    {
+      key: 'speed',
+      title: t("optimization.speed"),
+      description: t("optimization.prioritizeSpeed"),
+      icon: <Zap size={20} className="text-[#FF9800]" />,
+    },
+    {
+      key: 'balanced',
+      title: t("optimization.balanced"),
+      description: t("optimization.balancedDescription"),
+      icon: <Sliders size={20} className="text-[#4CAF50]" />,
+    },
+    {
+      key: 'quality',
+      title: t("optimization.quality"),
+      description: t("optimization.qualityDescription"),
+      icon: (
+        <Star
+          size={16}
+          className="text-[#2196F3] dark:text-[#BBDEFB] fill-[#BBDEFB] dark:fill-[#2196F3]"
+        />
+      ),
+    },
+  ];
+
   return (
     <Popover className="relative w-full max-w-[15rem] md:max-w-md lg:max-w-lg">
       <PopoverButton

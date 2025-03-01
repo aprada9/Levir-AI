@@ -19,6 +19,7 @@ import MessageSources from './MessageSources';
 import SearchImages from './SearchImages';
 import SearchVideos from './SearchVideos';
 import { useSpeech } from 'react-text-to-speech';
+import { useLanguage } from '@/i18n/client';
 
 const MessageBox = ({
   message,
@@ -41,6 +42,7 @@ const MessageBox = ({
 }) => {
   const [parsedMessage, setParsedMessage] = useState(message.content);
   const [speechMessage, setSpeechMessage] = useState(message.content);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const regex = /\[(\d+)\]/g;
@@ -152,7 +154,7 @@ const MessageBox = ({
                     <div className="flex flex-col space-y-3 text-black dark:text-white">
                       <div className="flex flex-row items-center space-x-2 mt-4">
                         <Layers3 />
-                        <h3 className="text-xl font-medium">Related</h3>
+                        <h3 className="text-xl font-medium">{t("search.related")}</h3>
                       </div>
                       <div className="flex flex-col space-y-3">
                         {message.suggestions.map((suggestion, i) => (

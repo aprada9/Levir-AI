@@ -8,6 +8,7 @@ import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, Ta
 import styles from './ocr.module.css';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { getAuthToken } from '@/lib/auth';
+import { useLanguage } from '@/i18n/client';
 
 interface OCRResult {
   text: string;
@@ -114,6 +115,7 @@ const OCRPage = () => {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClientComponentClient();
+  const { t } = useLanguage();
   
   // Fetch auth token on component mount
   useEffect(() => {
@@ -266,7 +268,7 @@ const OCRPage = () => {
     <div className="flex flex-col items-center justify-start min-h-screen p-8">
       <h1 className="text-4xl font-bold text-black/70 dark:text-white/70">OCR</h1>
       <p className="text-xl text-black/50 dark:text-white/50 mt-4 mb-8">
-        Extract text from images using AI
+        {t("ocr.extractText")}
       </p>
 
       <div className="w-full max-w-2xl">
@@ -300,8 +302,8 @@ const OCRPage = () => {
             <>
               <Upload className="w-8 h-8 text-black/50 dark:text-white/50" />
               <p className="text-center text-black/50 dark:text-white/50">
-                Click to upload or drag and drop<br />
-                PNG, JPG, GIF or WebP (max 10MB)
+                {t("ocr.uploadInstructions")}<br />
+                {t("ocr.fileTypes")}
               </p>
             </>
           )}
@@ -321,7 +323,7 @@ const OCRPage = () => {
               <div className="flex items-center gap-2">
                 <File className="w-5 h-5 text-black/50 dark:text-white/50" />
                 <h2 className="text-lg font-semibold text-black/70 dark:text-white/70">
-                  Extracted Text
+                  {t("ocr.extractedText")}
                 </h2>
               </div>
               <div className="flex gap-2">
@@ -331,7 +333,7 @@ const OCRPage = () => {
                   title="Copy to clipboard"
                 >
                   <Copy className="w-4 h-4 text-black/50 dark:text-white/50" />
-                  <span className="text-black/70 dark:text-white/70">Copy</span>
+                  <span className="text-black/70 dark:text-white/70">{t("ocr.copy")}</span>
                 </button>
                 <button
                   onClick={handleTextDownload}
@@ -339,7 +341,7 @@ const OCRPage = () => {
                   title="Download as TXT"
                 >
                   <FileText className="w-4 h-4 text-black/50 dark:text-white/50" />
-                  <span className="text-black/70 dark:text-white/70">TXT</span>
+                  <span className="text-black/70 dark:text-white/70">{t("ocr.txt")}</span>
                 </button>
                 <button
                   onClick={handleDocxDownload}
@@ -347,7 +349,7 @@ const OCRPage = () => {
                   title="Download as DOCX"
                 >
                   <FileIcon className="w-4 h-4 text-black/50 dark:text-white/50" />
-                  <span className="text-black/70 dark:text-white/70">DOCX</span>
+                  <span className="text-black/70 dark:text-white/70">{t("ocr.docx")}</span>
                 </button>
               </div>
             </div>

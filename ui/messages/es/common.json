@@ -14,13 +14,33 @@
   "search": {
     "placeholder": "Pregúntame lo que quieras...",
     "button": "Buscar",
-    "researchBeginsHere": "La investigación comienza aquí."
+    "researchBeginsHere": "La investigación comienza aquí.",
+    "askAnything": "Pregunta lo que quieras...",
+    "related": "Relacionados",
+    "rewrite": "Reescribir",
+    "searchVideos": "Buscar videos",
+    "viewMore": "Ver {{count}} más",
+    "sources": "Fuentes",
+    "answer": "Respuesta",
+    "searchesAllWeb": "Busca en toda la internet",
+    "searchAcademic": "Buscar en artículos académicos publicados",
+    "chatNoSearch": "Chatear sin buscar en la web",
+    "searchReddit": "Buscar discusiones y opiniones",
+    "searchSpanishLaw": "Buscar en documentos legales españoles (BOE)",
+    "focus": "Enfoque"
   },
   "ocr": {
     "title": "OCR - Reconocimiento de Texto",
     "uploadButton": "Subir Imagen",
     "processingMessage": "Procesando imagen...",
-    "downloadButton": "Descargar"
+    "downloadButton": "Descargar",
+    "extractText": "Extrae texto de imágenes usando IA",
+    "uploadInstructions": "Haz clic para subir o arrastra y suelta",
+    "fileTypes": "PNG, JPG, GIF o WebP (máx. 10MB)",
+    "extractedText": "Texto Extraído",
+    "copy": "Copiar",
+    "txt": "TXT",
+    "docx": "DOCX"
   },
   "footer": {
     "language": "Idioma",
@@ -37,6 +57,27 @@
     "deleting": "Eliminando...",
     "cancel": "Cancelar",
     "deleteSuccess": "Chat eliminado con éxito",
-    "deleteFailed": "Error al eliminar el chat"
+    "deleteFailed": "Error al eliminar el chat",
+    "attach": "Adjuntar"
+  },
+  "upload": {
+    "uploading": "Subiendo...",
+    "files": "archivos",
+    "attachedFiles": "Archivos adjuntos",
+    "add": "Añadir",
+    "clear": "Limpiar"
+  },
+  "settings": {
+    "title": "Configuración",
+    "appearance": "Apariencia",
+    "computational": "Motor de conocimiento computacional"
+  },
+  "optimization": {
+    "prioritizeSpeed": "Priorizar la velocidad y devolver la respuesta más rápida.",
+    "balancedDescription": "Encuentra el equilibrio adecuado entre velocidad y precisión",
+    "qualityDescription": "Obtén la respuesta más completa y precisa",
+    "speed": "Velocidad",
+    "balanced": "Equilibrado",
+    "quality": "Calidad (Próximamente)"
   }
 } 

@@ -7,6 +7,7 @@ import { Switch } from '@headlessui/react';
 import ThemeSwitcher from '@/components/theme/Switcher';
 import { ImagesIcon, VideoIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useLanguage } from '@/i18n/client';
 
 interface SettingsType {
   chatModelProviders: {
@@ -112,6 +113,7 @@ const Page = () => {
   const [automaticImageSearch, setAutomaticImageSearch] = useState(false);
   const [automaticVideoSearch, setAutomaticVideoSearch] = useState(false);
   const [savingStates, setSavingStates] = useState<Record<string, boolean>>({});
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchConfig = async () => {
@@ -379,10 +381,10 @@ const Page = () => {
       ) : (
         config && (
           <div className="flex flex-col space-y-6 pb-28 lg:pb-8">
-            <SettingsSection title="Appearance">
+            <SettingsSection title={t("settings.appearance")}>
               <div className="flex flex-col space-y-1">
                 <p className="text-black/70 dark:text-white/70 text-sm">
-                  Theme
+                  {t("footer.theme")}
                 </p>
                 <ThemeSwitcher />
               </div>

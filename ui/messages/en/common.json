@@ -14,13 +14,33 @@
   "search": {
     "placeholder": "Ask me anything...",
     "button": "Search",
-    "researchBeginsHere": "Research begins here."
+    "researchBeginsHere": "Research begins here.",
+    "askAnything": "Ask anything...",
+    "related": "Related",
+    "rewrite": "Rewrite",
+    "searchVideos": "Search videos",
+    "viewMore": "View {{count}} more",
+    "sources": "Sources",
+    "answer": "Answer",
+    "searchesAllWeb": "Searches across all of the internet",
+    "searchAcademic": "Search in published academic papers",
+    "chatNoSearch": "Chat without searching the web",
+    "searchReddit": "Search for discussions and opinions",
+    "searchSpanishLaw": "Search in Spanish legal documents (BOE)",
+    "focus": "Focus"
   },
   "ocr": {
     "title": "OCR - Text Recognition",
     "uploadButton": "Upload Image",
     "processingMessage": "Processing image...",
-    "downloadButton": "Download"
+    "downloadButton": "Download",
+    "extractText": "Extract text from images using AI",
+    "uploadInstructions": "Click to upload or drag and drop",
+    "fileTypes": "PNG, JPG, GIF or WebP (max 10MB)",
+    "extractedText": "Extracted Text",
+    "copy": "Copy",
+    "txt": "TXT",
+    "docx": "DOCX"
   },
   "footer": {
     "language": "Language",
@@ -37,6 +57,27 @@
     "deleting": "Deleting...",
     "cancel": "Cancel",
     "deleteSuccess": "Chat deleted successfully",
-    "deleteFailed": "Failed to delete chat"
+    "deleteFailed": "Failed to delete chat",
+    "attach": "Attach"
+  },
+  "upload": {
+    "uploading": "Uploading...",
+    "files": "files",
+    "attachedFiles": "Attached files",
+    "add": "Add",
+    "clear": "Clear"
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "computational": "Computational knowledge engine"
+  },
+  "optimization": {
+    "prioritizeSpeed": "Prioritize speed and return the fastest answer.",
+    "balancedDescription": "Find the right balance between speed and accuracy",
+    "qualityDescription": "Get the most thorough and accurate answer",
+    "speed": "Speed",
+    "balanced": "Balanced",
+    "quality": "Quality (Soon)"
   }
 } 

@@ -83,6 +83,15 @@ export const searchHandlers = {
     searchWeb: true,
     summarizer: false,
   }),
+  spanishLawSearch: new MetaSearchAgent({
+    activeEngines: ['boe.es'],
+    queryGeneratorPrompt: prompts.spanishLawSearchRetrieverPrompt,
+    responsePrompt: prompts.spanishLawSearchResponsePrompt,
+    rerank: true,
+    rerankThreshold: 0.3,
+    searchWeb: true,
+    summarizer: false,
+  }),
 };
 
 const handleEmitterEvents = (
