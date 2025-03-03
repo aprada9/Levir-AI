@@ -1,18 +1,20 @@
-FROM node:18-slim
+FROM node:20-slim
 
-WORKDIR /home/perplexica
+WORKDIR /home/levir-ai
 
-COPY src /home/perplexica/src
-COPY tsconfig.json /home/perplexica/
-COPY drizzle.config.ts /home/perplexica/
-COPY package.json /home/perplexica/
-COPY yarn.lock /home/perplexica/
-COPY .env /home/perplexica/
+COPY src /home/levir-ai/src
+COPY tsconfig.json /home/levir-ai/
+COPY drizzle.config.ts /home/levir-ai/
+COPY package.json /home/levir-ai/
+COPY yarn.lock /home/levir-ai/
+COPY .env /home/levir-ai/
 
-RUN mkdir /home/perplexica/data
-RUN mkdir /home/perplexica/uploads
+RUN mkdir /home/levir-ai/data
+RUN mkdir /home/levir-ai/uploads
 
-RUN yarn install --frozen-lockfile --network-timeout 600000
+RUN yarn install
 RUN yarn build
+
+EXPOSE 3001
 
 CMD ["yarn", "start"]

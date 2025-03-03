@@ -2,8 +2,8 @@ import { Metadata } from 'next'
 import RegisterForm from '@/components/auth/RegisterForm'
 
 export const metadata: Metadata = {
-  title: 'Register - Perplexica',
-  description: 'Create a new account on Perplexica',
+  title: 'Register - Levir AI',
+  description: 'Register for Levir AI',
 }
 
 export default function RegisterPage() {

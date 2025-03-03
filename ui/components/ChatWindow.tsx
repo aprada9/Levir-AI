@@ -320,7 +320,7 @@ const useSocket = (
         console.debug(new Date(), 'ws:cleanup');
       }
     };
-  }, [url, setIsWSReady, setError]);
+  }, [url, setIsWSReady, setError, supabase.auth]);
 
   return wsRef.current;
 };

@@ -1,13 +1,13 @@
-# Update Perplexica to the latest version
+# Update Levir AI to the latest version
 
-To update Perplexica to the latest version, follow these steps:
+To update Levir AI to the latest version, follow these steps:
 
-## For Docker users
+## Docker Installation
 
-1. Clone the latest version of Perplexica from GitHub:
+1. Clone the latest version of Levir AI from GitHub:
 
    ```bash
-   git clone https://github.com/ItzCrazyKns/Perplexica.git
+   git clone https://github.com/alvarodeprada/Levir-AI.git
    ```
 
 2. Navigate to the project directory.
@@ -28,12 +28,12 @@ To update Perplexica to the latest version, follow these steps:
 
 6. Once the command completes, go to http://localhost:3000 and verify the latest changes.
 
-## For non-Docker users
+## Non-Docker Installation
 
-1. Clone the latest version of Perplexica from GitHub:
+1. Clone the latest version of Levir AI from GitHub:
 
    ```bash
-   git clone https://github.com/ItzCrazyKns/Perplexica.git
+   git clone https://github.com/alvarodeprada/Levir-AI.git
    ```
 
 2. Navigate to the project directory.

@@ -1,6 +1,6 @@
-# Expose Perplexica to a network
+# Expose Levir AI to a network
 
-This guide will show you how to make Perplexica available over a network. Follow these steps to allow computers on the same network to interact with Perplexica. Choose the instructions that match the operating system you are using.
+This guide will show you how to make Levir AI available over a network. Follow these steps to allow computers on the same network to interact with Levir AI. Choose the instructions that match the operating system you are using.
 
 ## Windows
 
@@ -8,7 +8,7 @@ This guide will show you how to make Perplexica available over a network. Follow
 
 2. Navigate to the directory containing the `docker-compose.yaml` file
 
-3. Stop and remove the existing Perplexica containers and images:
+3. Stop and remove the existing Levir AI containers and images:
 
    ```bash
    docker compose down --rmi all
@@ -16,7 +16,7 @@ This guide will show you how to make Perplexica available over a network. Follow
 
 4. Open the `docker-compose.yaml` file in a text editor like Notepad++
 
-5. Replace `127.0.0.1` with the IP address of the server Perplexica is running on in these two lines:
+5. Replace `127.0.0.1` with the IP address of the server Levir AI is running on in these two lines:
 
    ```bash
    args:
@@ -26,7 +26,7 @@ This guide will show you how to make Perplexica available over a network. Follow
 
 6. Save and close the `docker-compose.yaml` file
 
-7. Rebuild and restart the Perplexica container:
+7. Rebuild and restart the Levir AI container:
 
    ```bash
    docker compose up -d --build
@@ -64,7 +64,7 @@ This guide will show you how to make Perplexica available over a network. Follow
 
 6. Save and exit the editor
 
-7. Rebuild and restart Perplexica:
+7. Rebuild and restart Levir AI:
 
    ```bash
    docker compose up -d --build
@@ -102,7 +102,7 @@ This guide will show you how to make Perplexica available over a network. Follow
 
 6. Save and exit the editor
 
-7. Rebuild and restart Perplexica:
+7. Rebuild and restart Levir AI:
 
    ```bash
    docker compose up -d --build

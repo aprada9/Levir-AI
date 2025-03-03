@@ -1,5 +1,5 @@
 {
-  "appName": "Perplexica",
+  "appName": "Levir AI",
   "language": "Language",
   "languageName": "English",
   "nav": {
@@ -27,6 +27,7 @@
     "chatNoSearch": "Chat without searching the web",
     "searchReddit": "Search for discussions and opinions",
     "searchSpanishLaw": "Search in Spanish legal documents (BOE)",
+    "searchCatalanLaw": "Search in Catalan legal documents (DOGC)",
     "focus": "Focus"
   },
   "ocr": {
@@ -45,7 +46,7 @@
   "footer": {
     "language": "Language",
     "theme": "Theme",
-    "copyright": "© 2023-2024 Perplexica"
+    "copyright": "© 2023-2024 Levir AI"
   },
   "time": {
     "ago": "ago"

@@ -42,10 +42,10 @@ jobs:
           docker buildx create --use
           if [[ "${{ matrix.service }}" == "backend" ]]; then \
             DOCKERFILE=backend.dockerfile; \
-            IMAGE_NAME=perplexica-backend; \
+            IMAGE_NAME=levir-ai-backend; \
           else \
             DOCKERFILE=app.dockerfile; \
-            IMAGE_NAME=perplexica-frontend; \
+            IMAGE_NAME=levir-ai-frontend; \
           fi
           docker buildx build --platform linux/amd64,linux/arm64 \
             --cache-from=type=registry,ref=itzcrazykns1337/${IMAGE_NAME}:main \
@@ -60,10 +60,10 @@ jobs:
           docker buildx create --use
           if [[ "${{ matrix.service }}" == "backend" ]]; then \
             DOCKERFILE=backend.dockerfile; \
-            IMAGE_NAME=perplexica-backend; \
+            IMAGE_NAME=levir-ai-backend; \
           else \
             DOCKERFILE=app.dockerfile; \
-            IMAGE_NAME=perplexica-frontend; \
+            IMAGE_NAME=levir-ai-frontend; \
           fi
           docker buildx build --platform linux/amd64,linux/arm64 \
             --cache-from=type=registry,ref=itzcrazykns1337/${IMAGE_NAME}:${{ env.RELEASE_VERSION }} \

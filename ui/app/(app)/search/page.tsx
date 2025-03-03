@@ -3,8 +3,8 @@ import ChatWindow from '@/components/ChatWindow'
 import { Suspense } from 'react'
 
 export const metadata: Metadata = {
-  title: 'Chat - Perplexica',
-  description: 'Chat with the internet, chat with Perplexica.',
+  title: 'Chat - Levir AI',
+  description: 'Chat with the internet, chat with Levir AI.',
 }
 
 export default function SearchPage() {

@@ -1,8 +1,8 @@
-# Perplexica Search API Documentation
+# Levir AI Search API Documentation
 
 ## Overview
 
-Perplexica’s Search API makes it easy to use our AI-powered search engine. You can run different types of searches, pick the models you want to use, and get the most recent info. Follow the following headings to learn more about Perplexica's search API.
+Levir AI's Search API makes it easy to use our AI-powered search engine. You can run different types of searches, pick the models you want to use, and get the most recent info. Follow the following headings to learn more about Levir AI's search API.
 
 ## Endpoint
 
@@ -28,10 +28,10 @@ The API accepts a JSON object in the request body, where you define the focus mo
   },
   "optimizationMode": "speed",
   "focusMode": "webSearch",
-  "query": "What is Perplexica",
+  "query": "What is Levir AI",
   "history": [
-    ["human", "Hi, how are you?"],
-    ["assistant", "I am doing well, how can I help you today?"]
+    ["human", "What is Levir AI?"],
+    ["assistant", "Levir AI is an AI-powered search engine..."]
   ]
 }
 ```
@@ -43,7 +43,7 @@ The API accepts a JSON object in the request body, where you define the focus mo
   - `provider`: Specifies the provider for the chat model (e.g., `openai`, `ollama`).
   - `model`: The specific model from the chosen provider (e.g., `gpt-4o-mini`).
   - Optional fields for custom OpenAI configuration:
-    - `customOpenAIBaseURL`: If you’re using a custom OpenAI instance, provide the base URL.
+    - `customOpenAIBaseURL`: If you're using a custom OpenAI instance, provide the base URL.
     - `customOpenAIKey`: The API key for a custom OpenAI instance.
 
 - **`embeddingModel`** (object, optional): Defines the embedding model for similarity-based searching. For model details you can send a GET request at `http://localhost:3001/api/models`. Make sure to use the key value (For example "text-embedding-3-large" instead of the display name "Text Embedding 3 Large").
@@ -66,8 +66,8 @@ The API accepts a JSON object in the request body, where you define the focus mo
 
   ```json
   [
-    ["human", "What is Perplexica?"],
-    ["assistant", "Perplexica is an AI-powered search engine..."]
+    ["human", "What is Levir AI?"],
+    ["assistant", "Levir AI is an AI-powered search engine..."]
   ]
   ```
 
@@ -79,23 +79,22 @@ The response from the API includes both the final message and the sources used t
 
 ```json
 {
-  "message": "Perplexica is an innovative, open-source AI-powered search engine designed to enhance the way users search for information online. Here are some key features and characteristics of Perplexica:\n\n- **AI-Powered Technology**: It utilizes advanced machine learning algorithms to not only retrieve information but also to understand the context and intent behind user queries, providing more relevant results [1][5].\n\n- **Open-Source**: Being open-source, Perplexica offers flexibility and transparency, allowing users to explore its functionalities without the constraints of proprietary software [3][10].",
+  "message": "Levir AI is an innovative, open-source AI-powered search engine designed to enhance the way users search for information online. Here are some key features and characteristics of Levir AI:\n\n- **AI-Powered Technology**: It utilizes advanced machine learning algorithms to not only retrieve information but also to understand the context and intent behind user queries, providing more relevant results [1][5].\n\n- **Open-Source**: Being open-source, Levir AI offers flexibility and transparency, allowing users to explore its functionalities without the constraints of proprietary software [3][10].",
   "sources": [
     {
-      "pageContent": "Perplexica is an innovative, open-source AI-powered search engine designed to enhance the way users search for information online.",
+      "pageContent": "Levir AI is an innovative, open-source AI-powered search engine designed to enhance the way users search for information online.",
       "metadata": {
-        "title": "What is Perplexica, and how does it function as an AI-powered search ...",
-        "url": "https://askai.glarity.app/search/What-is-Perplexica--and-how-does-it-function-as-an-AI-powered-search-engine"
+        "title": "What is Levir AI, and how does it function as an AI-powered search ...",
+        "url": "https://askai.glarity.app/search/What-is-Levir-AI--and-how-does-it-function-as-an-AI-powered-search-engine"
       }
     },
     {
-      "pageContent": "Perplexica is an open-source AI-powered search tool that dives deep into the internet to find precise answers.",
+      "pageContent": "Levir AI is an open-source AI-powered search tool that dives deep into the internet to find precise answers.",
       "metadata": {
         "title": "Sahar Mor's Post",
-        "url": "https://www.linkedin.com/posts/sahar-mor_a-new-open-source-project-called-perplexica-activity-7204489745668694016-ncja"
+        "url": "https://www.linkedin.com/posts/sahar-mor_a-new-open-source-project-called-levir-ai-activity-7204489745668694016-ncja"
       }
     }
-        ....
   ]
 }
 ```

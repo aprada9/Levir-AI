@@ -1,5 +1,5 @@
 {
-  "appName": "Perplexica",
+  "appName": "Levir AI",
   "language": "Idioma",
   "languageName": "Español",
   "nav": {
@@ -26,7 +26,8 @@
     "searchAcademic": "Buscar en artículos académicos publicados",
     "chatNoSearch": "Chatear sin buscar en la web",
     "searchReddit": "Buscar discusiones y opiniones",
-    "searchSpanishLaw": "Buscar en documentos legales españoles (BOE)",
+    "searchSpanishLaw": "Buscar en el Boletín Oficial del Estado (BOE)",
+    "searchCatalanLaw": "Buscar en el Diario Oficial de la Generalitat de Catalunya (DOGC)",
     "focus": "Enfoque"
   },
   "ocr": {
@@ -45,7 +46,7 @@
   "footer": {
     "language": "Idioma",
     "theme": "Tema",
-    "copyright": "© 2023-2024 Perplexica"
+    "copyright": "© 2023-2024 Levir AI"
   },
   "time": {
     "ago": "atrás"

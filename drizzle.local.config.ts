@@ -10,7 +10,7 @@ export default defineConfig({
     host: 'localhost',
     user: 'postgres',
     password: 'postgres',
-    database: 'perplexica',
+    database: 'levir-ai',
     port: 5432
   },
   verbose: true,

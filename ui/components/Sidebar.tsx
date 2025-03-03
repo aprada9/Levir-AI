@@ -39,7 +39,7 @@ const Sidebar = ({ children, session }: SidebarProps) => {
       icon: SquarePen,
       href: '/',
       active: !segments.includes('ocr'),
-      label: 'Perplexica',
+      label: 'Levir AI',
       subItems: [
         {
           icon: Search,

@@ -129,7 +129,7 @@ const OCRPage = () => {
     };
     
     fetchAuthToken();
-  }, []);
+  }, [supabase]);
 
   const handleTextDownload = () => {
     if (!result) return;

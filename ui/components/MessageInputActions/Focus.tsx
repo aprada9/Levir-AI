@@ -79,8 +79,14 @@ const Focus = ({
     
     {
       key: 'spanishLawSearch',
-      title: 'Spanish Law',
+      title: 'BOE',
       description: t("search.searchSpanishLaw"),
+      icon: <Scale size={16} />,
+    },
+    {
+      key: 'catalanLawSearch',
+      title: 'DOGC',
+      description: t("search.searchCatalanLaw"),
       icon: <Scale size={16} />,
     },
   ];

@@ -92,6 +92,15 @@ export const searchHandlers = {
     searchWeb: true,
     summarizer: false,
   }),
+  catalanLawSearch: new MetaSearchAgent({
+    activeEngines: ['dogc.gencat.cat'],
+    queryGeneratorPrompt: prompts.catalanLawSearchRetrieverPrompt,
+    responsePrompt: prompts.catalanLawSearchResponsePrompt,
+    rerank: true,
+    rerankThreshold: 0.3,
+    searchWeb: true,
+    summarizer: false,
+  }),
 };
 
 const handleEmitterEvents = (

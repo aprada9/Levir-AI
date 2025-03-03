@@ -20,6 +20,10 @@ import {
   spanishLawSearchResponsePrompt,
   spanishLawSearchRetrieverPrompt,
 } from './spanishLawSearch';
+import {
+  catalanLawSearchResponsePrompt,
+  catalanLawSearchRetrieverPrompt,
+} from './catalanLawSearch';
 
 export default {
   webSearchResponsePrompt,
@@ -35,4 +39,6 @@ export default {
   youtubeSearchRetrieverPrompt,
   spanishLawSearchResponsePrompt,
   spanishLawSearchRetrieverPrompt,
+  catalanLawSearchResponsePrompt,
+  catalanLawSearchRetrieverPrompt,
 };

@@ -10,10 +10,6 @@ export default function TestAuthPage() {
   const [apiData, setApiData] = useState<any>(null);
   const supabase = createClientComponentClient();
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
   const checkAuth = async () => {
     setLoading(true);
 
@@ -50,6 +46,10 @@ export default function TestAuthPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const testAPI = async () => {
     try {
