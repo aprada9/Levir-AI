@@ -18,6 +18,9 @@
 - [Using Levir AI's API](#using-levir-ais-api)
 - [Expose Levir AI to a network](#expose-levir-ai-to-network)
 - [One-Click Deployment](#one-click-deployment)
+- [Deployment to Production](#deployment-to-production)
+  - [Deploying to Vercel](#deploying-to-vercel)
+  - [Deploying to Render](#deploying-to-render)
 - [Upcoming Features](#upcoming-features)
 - [Support Us](#support-us)
   - [Donations](#donations)
@@ -97,3 +100,90 @@ There are mainly 2 ways of installing Levir AI - With Docker, Without Docker. Us
 3. Rename the `.env.example` file to `.env` in the `ui` folder and fill in all necessary fields.
 4. After populating the configuration and environment files, run `npm i` in both the `ui` folder and the root directory.
 5. Install the dependencies and then execute `
+
+## Deployment to Production
+
+Levir AI can be deployed to production environments like Vercel and Render. This section provides guidance on how to set up your environment for production deployment.
+
+### Environment Variables
+
+For production deployments, all configuration is managed through environment variables rather than the `config.toml` file. Refer to the `.env.example` file in the project root for a complete list of required environment variables.
+
+The key environment variables you need to configure include:
+
+- `OPENAI_API_KEY` - Your OpenAI API key
+- `SEARXNG_API_URL` - URL to your SearxNG instance
+- `PORT` - The port for your API server
+- `SIMILARITY_MEASURE` - The similarity measure to use for search
+- `DATABASE_URL` - Connection string for your PostgreSQL database
+- Other model API keys (GROQ, ANTHROPIC, GEMINI, etc.)
+
+### Deploying to Vercel
+
+To deploy the frontend (Next.js) to Vercel:
+
+1. Fork the Levir AI repository
+2. Connect your forked repository to Vercel
+3. Configure the environment variables in Vercel project settings
+4. Set the build command to:
+   ```
+   cd ui && npm install && npm run build
+   ```
+5. Set the output directory to:
+   ```
+   ui/.next
+   ```
+6. Deploy the project
+
+### Deploying to Render
+
+For deploying the API server on Render:
+
+1. Create a new Web Service on Render
+2. Connect your repository
+3. Configure the service with the following settings:
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+   - **Environment Variables:** Add all the required environment variables from `.env.example`
+4. Deploy the service
+
+**Important Notes:**
+- You will need to deploy a SearxNG instance separately or use an existing one
+- For production use, ensure you have proper database setup with Supabase
+- Configure CORS settings appropriately to allow communication between frontend and backend
+- Set up proper authentication for production environments
+
+## Upcoming Features
+
+- **Image and Video Search:** Add image and video search capabilities.
+- **Advanced Focus Modes:** Implement more advanced focus modes for specific types of questions.
+- **Customizable Search:** Allow users to customize their search experience.
+- **Real-Time Updates:** Implement real-time updates for search results.
+- **User Feedback:** Implement user feedback mechanisms to improve search accuracy.
+
+## Support Us
+
+If you find Levir AI useful and want to support its development, consider donating to the project.
+
+### Donations
+
+- **GitHub Sponsors:** If you're using GitHub, you can sponsor the project on GitHub.
+- **PayPal:** You can donate via PayPal.
+- **Crypto:** You can donate via cryptocurrency.
+
+## Contribution
+
+We welcome contributions from the community. If you're interested in contributing, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch.
+3. Make your changes.
+4. Submit a pull request.
+
+## Help and Support
+
+If you need help or have any questions, please feel free to reach out to us.
+
+- **GitHub Issues:** If you encounter any issues, please open an issue on GitHub.
+- **Discord:** You can join our Discord server for support.
+- **Email:** You can email us at [contact@levir.ai](mailto:contact@levir.ai).
