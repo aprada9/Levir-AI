@@ -2,17 +2,10 @@ services:
   - type: web
     name: levir-ai-searxng
     env: docker
-    dockerfilePath: ./Dockerfile.searxng
+    dockerfilePath: ./Dockerfile.searxng.simple
     envVars:
       - key: SEARXNG_SECRET
         generateValue: true
-      - key: BASE_URL
-        value: "https://levir-ai-searxng.onrender.com"
-      - key: INSTANCE_NAME
-        value: "Levir AI Search"
-      - key: SEARXNG_ENGINES_DISABLE
-        value: "soundcloud,wikidata,wolframalpha,youtube,yahoo,yahoo_news,yandex,yandex_images,dictzone,currency_convert"
-      # Standard Docker environment variable for the port
       - key: PORT
         value: "8080"
     disk:
@@ -20,8 +13,4 @@ services:
       mountPath: /etc/searxng
       sizeGB: 1
     healthCheckPath: /healthz
-    numInstances: 1
-    plan: starter
-    scaling:
-      minInstances: 1
-      maxInstances: 1 
+    plan: starter 

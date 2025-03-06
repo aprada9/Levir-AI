@@ -1,88 +1,47 @@
-use_default_settings: false
+use_default_settings: true
 
 general:
-  debug: false
   instance_name: 'Levir AI Search'
-  privacypolicy_url: false
-  donation_url: false
-  contact_url: false
-  enable_metrics: false
+
+server:
+  secret_key: 'a2fb23f1b02e6ee83875b09826990de0f6bd908b6638e8c10277d415f6ab852b'  # Is overwritten by ${SEARXNG_SECRET}
 
 search:
-  safe_search: 0
-  autocomplete: 'google'
-  default_lang: 'en'
-  ban_time_on_fail: 5
-  max_ban_time_on_fail: 60
   formats:
     - html
     - json
 
-server:
-  secret_key: 'a2fb23f1b02e6ee83875b09826990de0f6bd908b6638e8c10277d415f6ab852b'  # Is overwritten by ${SEARXNG_SECRET}
-  limiter: false
-  image_proxy: false
-  method: 'GET'
-  default_http_headers:
-    X-Content-Type-Options: nosniff
-    X-XSS-Protection: 1; mode=block
-    X-Download-Options: noopen
-    X-Robots-Tag: noindex, nofollow
-    Referrer-Policy: no-referrer
-
-ui:
-  static_use_hash: true
-  default_theme: simple
-  query_in_title: true
-
 outgoing:
-  request_timeout: 15.0
-  max_request_timeout: 60.0
-  pool_connections: 100
-  pool_maxsize: 100
-  enable_http2: true
-  proxies:
-    http: false
-    https: false
-  using_tor_proxy: false
-  extra_proxy_timeout: 10.0
-  retries: 1
-  
+  request_timeout: 10
+  max_request_timeout: 30
+
 engines:
   - name: google
-    engine: google
-    shortcut: g
     disabled: false
     
   - name: duckduckgo
-    engine: duckduckgo
-    shortcut: ddg
     disabled: false
     
   - name: bing
-    engine: bing
-    shortcut: b
     disabled: false
     
   - name: wikipedia
-    engine: wikipedia
-    shortcut: w
     disabled: false
     
-  - name: brave
-    engine: brave
-    shortcut: br
-    disabled: false
-
-  # Disable all problematic engines
   - name: soundcloud
-    engine: soundcloud
     disabled: true
     
   - name: wikidata
-    engine: wikidata
     disabled: true
     
   - name: wolframalpha
-    engine: wolframalpha
+    disabled: true
+  
+  - name: youtube
+    disabled: true
+    
+  - name: yahoo
+    disabled: true
+    
+  - name: yahoo_news
     disabled: true
