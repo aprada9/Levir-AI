@@ -8,19 +8,12 @@ ENV SEARXNG_OUTGOING_POOL_MAXSIZE=100
 ENV SEARXNG_OUTGOING_ENABLE_HTTP2=true
 ENV SEARXNG_OUTGOING_RETRIES=1
 
-# uWSGI settings for better stability
+# uWSGI settings for better stability - keeping it simple
 ENV UWSGI_WORKERS=4
 ENV UWSGI_THREADS=4
-ENV UWSGI_CHEAPER=1
-ENV UWSGI_PROCESSES=2
-ENV UWSGI_MEMORY_REPORT=true
-ENV UWSGI_RELOAD_ON_RSS=512
-ENV UWSGI_HARAKIRI=30
 
 # Copy configuration files
 COPY ./searxng/settings.yml /etc/searxng/settings.yml
-COPY ./searxng/uwsgi.ini /etc/searxng/uwsgi.ini
-COPY ./searxng/limiter.toml /etc/searxng/limiter.toml
 
 # Expose port
 EXPOSE 8080

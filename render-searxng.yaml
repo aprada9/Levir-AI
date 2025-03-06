@@ -12,6 +12,9 @@ services:
         value: "Levir AI Search"
       - key: SEARXNG_ENGINES_DISABLE
         value: "soundcloud,wikidata,wolframalpha,youtube,yahoo,yahoo_news,yandex,yandex_images,dictzone,currency_convert"
+      # Standard Docker environment variable for the port
+      - key: PORT
+        value: "8080"
     disk:
       name: searxng-data
       mountPath: /etc/searxng
