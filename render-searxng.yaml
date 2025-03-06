@@ -10,10 +10,15 @@ services:
         value: "https://levir-ai-searxng.onrender.com"
       - key: INSTANCE_NAME
         value: "Levir AI Search"
+      - key: SEARXNG_ENGINES_DISABLE
+        value: "soundcloud,wikidata,wolframalpha,youtube,yahoo,yahoo_news,yandex,yandex_images,dictzone,currency_convert"
     disk:
       name: searxng-data
       mountPath: /etc/searxng
       sizeGB: 1
     healthCheckPath: /healthz
     numInstances: 1
-    plan: starter 
+    plan: starter
+    scaling:
+      minInstances: 1
+      maxInstances: 1 
