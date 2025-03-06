@@ -15,7 +15,7 @@ If this works, move on.
 
 🔗 Step 2: Remove the Fork Tracking
 Inside your existing local repo, open a terminal and run:
-
+.
 sh
 Copiar
 Editar
