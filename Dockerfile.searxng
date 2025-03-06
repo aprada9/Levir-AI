@@ -1,0 +1,11 @@
+FROM searxng/searxng:latest
+
+# Copy configuration files
+COPY ./searxng/settings.yml /etc/searxng/settings.yml
+COPY ./searxng/uwsgi.ini /etc/searxng/uwsgi.ini
+COPY ./searxng/limiter.toml /etc/searxng/limiter.toml
+
+# Expose port
+EXPOSE 8080
+
+# SearxNG runs as a non-root user by default, so we keep that behavior 

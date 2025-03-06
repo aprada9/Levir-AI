@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: levir-ai-searxng
+    env: docker
+    dockerfilePath: ./Dockerfile.searxng
+    envVars:
+      - key: SEARXNG_SECRET
+        generateValue: true
+      - key: BASE_URL
+        value: "https://levir-ai-searxng.onrender.com"
+      - key: INSTANCE_NAME
+        value: "Levir AI Search"
+    disk:
+      name: searxng-data
+      mountPath: /etc/searxng
+      sizeGB: 1
+    healthCheckPath: /healthz
+    numInstances: 1
+    plan: starter 
