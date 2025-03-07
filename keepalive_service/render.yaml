@@ -7,6 +7,6 @@ services:
     startCommand: npm start
     envVars:
       - key: SEARXNG_URL
-        value: https://your-searxng-service-url.onrender.com/healthz
+        value: https://levir-ai-searxng.onrender.com/healthz
       - key: BACKEND_URL  
-        value: https://your-backend-service-url.onrender.com/api 
+        value: https://levir-ai-backend.onrender.com/api
