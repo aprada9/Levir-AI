@@ -23,6 +23,7 @@ const Page = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'Accept-Language': navigator.language || 'en',
           },
         });
 
