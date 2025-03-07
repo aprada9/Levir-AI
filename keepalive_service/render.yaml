@@ -1,5 +1,5 @@
 services:
-  - type: web
+  - type: worker
     name: levir-ai-keepalive
     env: node
     plan: free
