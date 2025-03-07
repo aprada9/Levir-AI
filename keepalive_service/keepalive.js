@@ -7,12 +7,12 @@ const SERVICES = [
   {
     name: 'SearxNG Service',
     url: process.env.SEARXNG_URL || 'https://your-searxng-service-url.onrender.com/healthz',
-    interval: 10 * 60 * 1000, // 10 minutes
+    interval: 5 * 60 * 1000, // 5 minutes instead of 10
   },
   {
     name: 'Backend Service',
     url: process.env.BACKEND_URL || 'https://your-backend-service-url.onrender.com/api',
-    interval: 10 * 60 * 1000, // 10 minutes
+    interval: 5 * 60 * 1000, // 5 minutes instead of 10
   }
 ];
 
@@ -60,6 +60,24 @@ SERVICES.forEach(service => {
   setInterval(() => {
     pingService(service);
   }, service.interval);
+});
+
+// Create a simple HTTP server for Render to detect an open port
+const PORT = process.env.PORT || 10000;
+const server = http.createServer((req, res) => {
+  const pingHistory = SERVICES.map(service => `${service.name}: Pinging every ${service.interval/1000/60} minutes`);
+  
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({
+    status: 'Keepalive service running',
+    services: SERVICES.map(s => s.name),
+    pingFrequency: `${SERVICES[0].interval/1000/60} minutes`,
+    pingHistory: pingHistory
+  }));
+});
+
+server.listen(PORT, () => {
+  console.log(`HTTP server listening on port ${PORT}`);
 });
 
 // Keep the process alive
