@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: levir-ai-keepalive
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: SEARXNG_URL
+        value: https://your-searxng-service-url.onrender.com/healthz
+      - key: BACKEND_URL  
+        value: https://your-backend-service-url.onrender.com/api 
