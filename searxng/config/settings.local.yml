@@ -1,13 +1,11 @@
+# searxng/settings.local.yml
 use_default_settings: true
 
 general:
   instance_name: 'Levir AI Search'
-  debug: false
-  enable_metrics: true
 
 server:
-  secret_key: 'a2fb23f1b02e6ee83875b09826990de0f6bd908b6638e8c10277d415f6ab852b'  # Is overwritten by ${SEARXNG_SECRET}
-  # Allow CORS from backend
+  secret_key: 'a2fb23f1b02e6ee83875b09826990de0f6bd908b6638e8c10277d415f6ab852b'
   bind_address: "0.0.0.0:8080"
   public_url: http://localhost:4000/
   base_url: /
@@ -21,6 +19,9 @@ server:
     X-Download-Options : noopen
     X-Robots-Tag : noindex, nofollow
     Referrer-Policy : no-referrer
+    Access-Control-Allow-Origin: http://localhost:3001
+    Access-Control-Allow-Methods: GET, OPTIONS
+    Access-Control-Allow-Headers: Content-Type
 
 search:
   safe_search: 0
@@ -31,14 +32,6 @@ search:
   default_lang: "all"
   ban_time_on_fail: 5
   max_ban_time_on_fail: 120
-  suspended_times:
-    SearxEngineAccessDenied: 86400
-    SearxEngineCaptcha: 86400
-    SearxEngineError: 3600
-    SearxEngineTooManyRequests: 3600
-    cf_SearxEngineCaptcha: 1800
-    cf_SearxEngineError: 1800
-    cf_SearxEngineTooManyRequests: 1800
 
 outgoing:
   request_timeout: 10

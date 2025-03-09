@@ -2,12 +2,18 @@ services:
   - type: web
     name: levir-ai-searxng
     env: docker
-    dockerfilePath: ./Dockerfile.searxng.simple
+    dockerfilePath: ./Dockerfile.searxng
     envVars:
       - key: SEARXNG_SECRET
         generateValue: true
       - key: PORT
         value: "8080"
+      - key: IS_RENDER
+        value: "true"
+      - key: BASE_URL
+        value: "https://levir-ai-searxng.onrender.com"
+      - key: BACKEND_URL
+        value: "https://levir-ai-backend.onrender.com"
     disk:
       name: searxng-data
       mountPath: /etc/searxng

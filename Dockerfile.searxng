@@ -8,14 +8,22 @@ ENV SEARXNG_OUTGOING_POOL_MAXSIZE=100
 ENV SEARXNG_OUTGOING_ENABLE_HTTP2=true
 ENV SEARXNG_OUTGOING_RETRIES=1
 
-# uWSGI settings for better stability - keeping it simple
+# uWSGI settings for better stability
 ENV UWSGI_WORKERS=4
 ENV UWSGI_THREADS=4
 
 # Copy configuration files
-COPY ./searxng/settings.yml /etc/searxng/settings.yml
+COPY ./searxng/config/settings.local.yml /etc/searxng/settings.local.yml
+COPY ./searxng/config/settings.prod.yml /etc/searxng/settings.prod.yml
+
+# Copy the settings selection script
+COPY ./searxng/select-settings.sh /usr/local/bin/select-settings.sh
+RUN chmod +x /usr/local/bin/select-settings.sh
 
 # Expose port
 EXPOSE 8080
+
+# Use the selection script as entrypoint
+ENTRYPOINT ["/usr/local/bin/select-settings.sh"]
 
 # SearxNG runs as a non-root user by default, so we keep that behavior 
