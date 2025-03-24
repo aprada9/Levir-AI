@@ -1,17 +1,8 @@
 services:
   searxng:
     image: docker.io/searxng/searxng:latest
-    environment:
-      - INSTANCE_NAME=Levir AI Search
-      - AUTOCOMPLETE=google
-      - SAFE_SEARCH=0
-      - SEARXNG_LIMITER=false
-      - SEARXNG_REQUEST_TIMEOUT=10.0
-      - SEARXNG_BASE_URL=/
-      - SEARXNG_ENABLE_METRICS=false
-      - SEARXNG_CORS_ALLOW_ALL_ORIGINS=true
     volumes:
-      - ./searxng/settings.yml:/etc/searxng/settings.yml:ro
+      - ./searxng:/etc/searxng:rw
     ports:
       - 4000:8080
     networks:
